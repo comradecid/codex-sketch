@@ -7,12 +7,14 @@ const ERR_LAYER_NULL = 'No layer provided';
 const LBL_CANCEL = 'Cancel';
 const LBL_CHOOSE = 'Choose';
 const LBL_CONTINUE = 'Continue';
-const LBL_TITLE_CONFIRM_UPDATE = 'Confirm update to style guide';
-const MSG_CONFIRM_CONFIRM_UPDATE = 'Would you like to update the style guide with the following symbols?';
+const LBL_TITLE_CONFIRM_UPDATE = 'Confirm style guide update';
+const MSG_CONFIRM_UPDATE = 'Would you like to update the style guide with the following symbols?';
+const MSG_CONFIRM_IGNORE = 'The following symbols will be ignored, and not synced with the style guide:';
 const MSG_SELECT_SYMBOL = 'Please select at least one symbol.';
 const ICON_FILE = 'icon.png';
 const OUTPUT_FILENAME = 'hydra_output.json';
 const LBL_LINEITEM = ' · ';
+const SYMBOL_IGNORE_FLAG = '#';
 
 // TMP: Make certain consts available elsewhere
 export {
@@ -36,7 +38,7 @@ export function getLayerJSON( layer ) {
 			let dict = layer.sketchObject.treeAsDictionary();
 			let jsonData = NSJSONSerialization.dataWithJSONObject_options_error_(dict, 0, nil);
 			let jsonString = NSString.alloc().initWithData_encoding_(jsonData, NSUTF8StringEncoding);
-			
+
 			return jsonString;
 			
 		} catch(error) {
@@ -76,7 +78,7 @@ export function formatFilePath( path ) {
 /* ---- */
   
 
-/** Display confirmation dialog before initiating sync
+/** Pre-process symbols and get confirmation of sync
     @param {string} sketch - Sketch API from context
     @param {string} symbols - Changes that will be synced
     @return {object} Click event for dialog	
@@ -97,24 +99,52 @@ export function getConfirmation( sketch, symbols ) {
 			alert.addButtonWithTitle(LBL_CANCEL);
 			alert.setMessageText(LBL_TITLE_CONFIRM_UPDATE);
 			
-			// Set dialog content
+			
+			// TODO: move this into main.js as part of processLayer!
+			//((0 === layerName.indexOf(SYMBOL_IGNORE_FLAG)) ? { 'ignore' : true } : null)
 			// Assemble list of changes to be synced, for messaging to user
 		  // TODO: Spit out names in reverse order, replace for/in loop
 		  // TODO: Cut off if over a certain number?
 		  // TODO: List ignored in similar, separate list
-			let message = '';
+			let message = MSG_CONFIRM_UPDATE + '\n\n';
+			let name = '';
 			let numSymbols = symbols.length;
+			let ignoreList = [];
+			let numIgnores;
+			
 		  for (let i in symbols) {
 		  
 		  	// Parse stringified JSON back into real JSON, 
 		  	// both to read values and allow for file dump later
 		  	// TODO: Possibly hide actual symbol names, and move this to debug
 		    symbols[i] = JSON.parse(symbols[i]);
-				message += symbols[i].name;
-				message += ((i + 1) < numSymbols) ? LBL_LINEITEM : '';
+				name = symbols[i].name;
+				
+				// If 'ignore' flag is found, add this to the 'ignore' list
+				if (0 === (name.indexOf(SYMBOL_IGNORE_FLAG))) {
+					
+					ignoreList.push(symbols[i].name);
+				
+				} else {
+
+					message += (i > 0) ? LBL_LINEITEM : '';
+					message += symbols[i].name;
+				}
 		  }
 		  
-		  message = MSG_CONFIRM_CONFIRM_UPDATE + '\n\n' + message;
+		  numIgnores = ignoreList.length;
+		  if (numIgnores > 0) {
+			  
+			  message += '\n\n' + MSG_CONFIRM_IGNORE + '\n\n';
+			  
+			  for (let i in ignoreList) {
+				  
+				  message += (i > 0) ? LBL_LINEITEM : '';
+					message += ignoreList[i];
+			  }
+		  }
+		  
+		  message += '\n';
 		  alert.setInformativeText(message);
 		  
 		  return alert.runModal();

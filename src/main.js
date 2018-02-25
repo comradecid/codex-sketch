@@ -62,6 +62,7 @@ export default function (context) {
 	// Identifiers
 	const LAYER_TYPE_SYMBOL_INSTANCE = 'MSSymbolInstance';
 	const LAYER_TYPE_SYMBOL_MASTER = 'MSSymbolMaster';
+	const SYMBOL_IGNORE_FLAG = '#';
 
 	// Main sketch objects and other resources
 	const sketch = context.api();
@@ -77,15 +78,19 @@ export default function (context) {
 	// TODO: How do we deal with local overrides?
   function processLayer( layer ) {
 		    
-    let layerName = layer.sketchObject.className();
+    let layerClass = layer.sketchObject.className();
     
     // If this is a symbol...
     // TODO: handle diffs between instances and masters
     // TODO: Recurse this!
-    if ((layerName == LAYER_TYPE_SYMBOL_INSTANCE) || 
-    	  (layerName == LAYER_TYPE_SYMBOL_MASTER)) {
+    if ((layerClass == LAYER_TYPE_SYMBOL_INSTANCE) || 
+    	  (layerClass == LAYER_TYPE_SYMBOL_MASTER)) {
 
+			// Get name of symbol first, to determine if it should be ignored
+			let layerName = String(layer.sketchObject.name());
+			
 			// Get JSON for selected symbol
+			// If name includes ignore flag, ignore it; otherwise, ready it for sync
 			// TODO: Non-JSON formatting of symbols collection info can lead to parse errors
 			let jsonString = getLayerJSON(layer);
 			foundSymbols.push(jsonString);
