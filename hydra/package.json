@@ -7,7 +7,7 @@
   "skpm": {
     "name": "hydra",
     "manifest": "src/manifest.json",
-    "main": "Hydra.sketchplugin",
+    "main": "plugin.sketchplugin",
     "assets": [
       "assets/**/*"
     ]

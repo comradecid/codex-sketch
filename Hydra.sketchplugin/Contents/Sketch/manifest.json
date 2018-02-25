@@ -1,5 +1,5 @@
 {
-	"name": "⚛️ Hydra",
+  "name": "⚛️ Hydra",
   "description": "Sketch file -> style guide sync utility",
   "author": "Comrade.Cid",
   "homepage": "http://comradecid.com",
@@ -13,7 +13,7 @@
       "name": "Update style guide",
       "identifier": "sync-identifier",
       "shortcut": "cmd shift u",
-      "script": "./main.js"
+      "script": "main.js"
     }
   ],
   "menu": {
@@ -21,5 +21,7 @@
     "items": [
       "sync-identifier"
     ]
-  }
+  },
+  "disableCocoaScriptPreprocessor": true,
+  "appcast": "https://raw.githubusercontent.com//master/.appcast.xml"
 }
