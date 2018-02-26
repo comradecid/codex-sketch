@@ -1,0 +1,27 @@
+{
+  "name": "📖 Codex",
+  "description": "Sketch file -> style guide sync utility",
+  "author": "Cidric Lapin-Tueur",
+  "homepage": "http://comradecid.com",
+  "version": "1.0",
+  "identifier": "com.comradecid.sketch.codex",
+  "compatibleVersion": 3,
+  "bundleVersion": 1,
+  "icon": "icon_128x128.png",
+  "commands": [
+    {
+      "name": "Update style guide",
+      "identifier": "sync-identifier",
+      "shortcut": "cmd shift u",
+      "script": "main.js"
+    }
+  ],
+  "menu": {
+    "title": "📖 Codex",
+    "items": [
+      "sync-identifier"
+    ]
+  },
+  "disableCocoaScriptPreprocessor": true,
+  "appcast": "https://raw.githubusercontent.com//master/.appcast.xml"
+}
