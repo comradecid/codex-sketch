@@ -1,13 +1,13 @@
 {
-  "name": "hydra",
+  "name": "codex",
   "version": "0.1.0",
   "engines": {
     "sketch": ">=3.0"
   },
   "skpm": {
-    "name": "hydra",
+    "name": "codex",
     "manifest": "src/manifest.json",
-    "main": "Hydra.sketchplugin",
+    "main": "Codex.sketchplugin",
     "assets": [
       "assets/**/*"
     ]

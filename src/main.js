@@ -40,7 +40,10 @@ https://medium.com/@marianomike/the-beginners-guide-to-writing-sketch-plugins-pa
 import { 
 	dumpToOutputFile, getConfirmation, getLayerJSON, 
 	MSG_SELECT_SYMBOL
-} from './common.js';
+} from './ui.js';
+
+import { 
+} from './data.js';
 
 
 // Debugging
