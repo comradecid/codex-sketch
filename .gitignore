@@ -1,6 +1,5 @@
 # build artifacts
-plugin.sketchplugin
-Hydra.sketchplugin
+*.sketchplugin
 
 # npm
 node_modules
