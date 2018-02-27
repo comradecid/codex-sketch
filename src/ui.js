@@ -127,6 +127,16 @@ export function writeDataToFile( data, path ) {
 	}
 }
 
+/*
+function readFile(path) {
+    return NSString.stringWithContentsOfFile_encoding_error(path, NSUTF8StringEncoding, null);
+}
+
+function writeFile(path, content) {
+    const string = NSString.stringWithFormat("%@", content);
+    return string.writeToFile_atomically(path, true);
+}
+*/
 
 /* ---- */
   
@@ -218,7 +228,10 @@ export function dumpToOutputFile( data ) {
 			panel.setCanCreateDirectories(true);
 			panel.setCanChooseFiles(false);
 			panel.setPrompt(LBL_CHOOSE);
-			
+
+//open.setTitle("Import a Color Palette");
+//open.setPrompt("Import Palette");
+
 			// Load file save dialog, capturing click event
 			let clickEvent = panel.runModal();
 			if (clickEvent == NSFileHandlingPanelOKButton) {
