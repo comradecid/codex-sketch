@@ -38,11 +38,12 @@ https://medium.com/@marianomike/the-beginners-guide-to-writing-sketch-plugins-pa
 
 
 import { 
-	dumpToOutputFile, getConfirmation, getLayerJSON, 
+	dumpToOutputFile, getConfirmation, showMessage, 
 	MSG_SELECT_SYMBOL
 } from './ui.js';
 
 import { 
+	getLayerJSON
 } from './data.js';
 
 
@@ -70,7 +71,10 @@ export default function (context) {
 	// Main sketch objects and other resources
 	const sketch = context.api();
   const selectedLayers = sketch.selectedDocument.selectedPage.selectedLayers;	
-  const foundSymbols = [];	// Container to hold selected symbols
+  
+  // Containers to hold selected symbols
+  const syncSymbols = [];
+  const ignoreSymbolNames = [];
   
   /* ---- */
 
@@ -91,12 +95,49 @@ export default function (context) {
 
 			// Get name of symbol first, to determine if it should be ignored
 			let layerName = String(layer.sketchObject.name());
-			
+
 			// Get JSON for selected symbol
 			// If name includes ignore flag, ignore it; otherwise, ready it for sync
 			// TODO: Non-JSON formatting of symbols collection info can lead to parse errors
 			let jsonString = getLayerJSON(layer);
-			foundSymbols.push(jsonString);
+
+/*
+		  for (let i in symbols) {
+		  
+		  	// Parse stringified JSON back into real JSON, 
+		  	// both to read values and allow for file dump later
+		  	// TODO: Possibly hide actual symbol names, and move this to debug
+		    symbols[i] = JSON.parse(symbols[i]);
+				name = symbols[i].name;
+				
+				// If 'ignore' flag is found, add this to the 'ignore' list
+				if (0 === (name.indexOf(SYMBOL_IGNORE_FLAG))) {
+					
+					ignoreList.push(symbols[i].name);
+				
+				} else {
+	
+					message += (i > 0) ? LBL_LINEITEM : '';
+					message += symbols[i].name;
+				}
+		  }
+		  
+		  numIgnores = ignoreList.length;
+		  if (numIgnores > 0) {
+			  
+			  message += '\n\n' + MSG_CONFIRM_IGNORE + '\n\n';
+			  
+			  for (let i in ignoreList) {
+				  
+				  message += (i > 0) ? LBL_LINEITEM : '';
+					message += ignoreList[i];
+			  }
+		  }
+*/
+
+			// TODO: Re-account for ignored items
+			syncSymbols.push(jsonString);
+			ignoreSymbolNames.push(layerName);
     }
   }
 
@@ -110,37 +151,42 @@ export default function (context) {
 		
 		// If we have symbols to sync, proceed; 
 		// if not, we risk errors when syncing/dumping the data
-		let numSymbols = foundSymbols.length;
+		let numSymbols = syncSymbols.length;
+
 		if (numSymbols > 0) {
 
-			// Load confirmation dialog, capturing click event
-			let clickEvent = getConfirmation(sketch, foundSymbols);
+			// Load confirmation dialog, capturing response from user
+			let confirmed = getConfirmation(sketch, syncSymbols, ignoreSymbolNames);
 	    
 	    // If user has opted to continue...
-	    if (clickEvent == NSAlertFirstButtonReturn) {
+	    if (confirmed) {
 		  
 				// Debug: dump JSON to file, instead of pushing to server
 				if (DEBUG) {
 		
-					dumpToOutputFile(JSON.stringify(foundSymbols, null, "\t"));
+					dumpToOutputFile(syncSymbols);
 				
 				} else {
 					
 					// Push it to server
 				}
 
+			// User cancelled sync
+	    } else {
+		  
+		    showMessage(sketch, 'Update cancelled.');
 	    }
 
 		// User has selected at least one layer, but none are symbols
 		// TODO: Catch for when we have at least one symbol, but all are 'ignored'
 		} else {
 		
-		  sketch.message(MSG_SELECT_SYMBOL);
+		  showMessage(sketch, MSG_SELECT_SYMBOL);
 		}
 
 	// User hasn't selected anything
   } else {
 	  
-	  sketch.message(MSG_SELECT_SYMBOL);
+	  showMessage(sketch, MSG_SELECT_SYMBOL);
   }
 }
