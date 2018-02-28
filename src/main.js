@@ -34,6 +34,14 @@ http://developer.sketchapp.com/guides/debugging-plugins
 https://medium.com/@bomberstudios/debugging-sketch-plugins-e134b14ee22
 https://medium.com/@marianomike/the-beginners-guide-to-writing-sketch-plugins-part-1-28a5e3f01c68
 
+
+DEPENDENCIES
+
+Requires the use of:
+
+- skpm/sketch-module-web-view for generating webview-based windows for interacting with the user
+  More info: https://github.com/skpm/sketch-module-web-view
+
 */
 
 
@@ -98,7 +106,6 @@ export default function (context) {
 
 			// Get JSON for selected symbol
 			// If name includes ignore flag, ignore it; otherwise, ready it for sync
-			// TODO: Non-JSON formatting of symbols collection info can lead to parse errors
 			let jsonString = getLayerJSON(layer);
 
 /*
@@ -142,7 +149,7 @@ export default function (context) {
   }
 
   /* ---- */
-  
+
   // If user has selected at least one item...
   if (selectedLayers.length > 0) {
 

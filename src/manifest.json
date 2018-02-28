@@ -14,12 +14,18 @@
       "identifier": "sync-identifier",
       "shortcut": "cmd shift u",
       "script": "./main.js"
+    }, 
+    {
+      "name": "Preferences",
+      "identifier": "prefs-identifier",
+      "script": "./prefs.js"
     }
   ],
   "menu": {
     "title": "📖 Codex",
     "items": [
-      "sync-identifier"
+      "sync-identifier", 
+      "prefs-identifier"
     ]
   }
 }

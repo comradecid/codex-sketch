@@ -20,5 +20,8 @@
   },
   "devDependencies": {
     "@skpm/builder": "^0.4.0"
+  },
+  "dependencies": {
+    "sketch-module-web-view": "^0.2.6"
   }
 }

@@ -236,7 +236,6 @@ export function dumpToOutputFile( data ) {
 			let clickEvent = panel.runModal();
 			if (clickEvent == NSFileHandlingPanelOKButton) {
 		
-				// TODO: Figure out why stringify is failing on foundSymbols
 				// Dump data to new file at target directory path
 				writeDataToFile(data, formatFilePath(panel.URL()));
 			}
