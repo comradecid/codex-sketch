@@ -4,73 +4,63 @@
 */
 
 /* Less commonly used light variant */
-/*
 @font-face {
   font-family: 'AvenirXL';
-  src: url('./AveniLig.eot');
-  src: url('./AveniLig.eot') format('embedded-opentype'),
-       url('./AveniLig.woff') format('woff'),
-       url('./AveniLig.ttf') format('truetype'),
-       url('./AveniLig.svg') format('svg');
+  src: url('../AveniLig.eot');
+  src: url('../AveniLig.eot') format('embedded-opentype'),
+       url('../AveniLig.woff') format('woff'),
+       url('../AveniLig.ttf') format('truetype'),
+       url('../AveniLig.svg') format('svg');
   font-weight: normal;
   font-style: normal;
 }
-*/
 
 /* Lightweight body font */
-/*
 @font-face {
   font-family: 'AvenirL';
-  src: url('./AveniBoo.eot');
-  src: url('./AveniBoo.eot') format('embedded-opentype'),
-       url('./AveniBoo.woff') format('woff'),
-       url('./AveniBoo.ttf') format('truetype'),
-       url('./AveniBoo.svg') format('svg');
+  src: url('../AveniBoo.eot');
+  src: url('../AveniBoo.eot') format('embedded-opentype'),
+       url('../AveniBoo.woff') format('woff'),
+       url('../AveniBoo.ttf') format('truetype'),
+       url('../AveniBoo.svg') format('svg');
   font-weight: normal;
   font-style: normal;
 }
-*/
 
 /* Default body font */
-/*
 @font-face {
   font-family: 'Avenir';
-  src: url('./AveniRom.eot');
-  src: url('./AveniRom.eot') format('embedded-opentype'),
-       url('./AveniRom.woff') format('woff'),
-       url('./AveniRom.ttf') format('truetype'),
-       url('./AveniRom.svg') format('svg');
+  src: url('../AveniRom.eot');
+  src: url('../AveniRom.eot') format('embedded-opentype'),
+       url('../AveniRom.woff') format('woff'),
+       url('../AveniRom.ttf') format('truetype'),
+       url('../AveniRom.svg') format('svg');
   font-style: normal;
 }
-*/
 
 /* Heavyweight body font */
-/*
 @font-face {
   font-family: 'AvenirB';
-  src: url('./AveniMed.eot');
-  src: url('./AveniMed.eot') format('embedded-opentype'),
-       url('./AveniMed.woff') format('woff'),
-       url('./AveniMed.ttf') format('truetype'),
-       url('./AveniMed.svg') format('svg');
+  src: url('../AveniMed.eot');
+  src: url('../AveniMed.eot') format('embedded-opentype'),
+       url('../AveniMed.woff') format('woff'),
+       url('../AveniMed.ttf') format('truetype'),
+       url('../AveniMed.svg') format('svg');
   font-weight: bold;
   font-style: normal;
 }
-*/
 
 /* Less commonly used heavy variant */
-/*
 @font-face {
   font-family: 'AvenirXB';
-  src: url('./AveniHea.eot');
-  src: url('./AveniHea.eot') format('embedded-opentype'),
-       url('./AveniHea.woff') format('woff'),
-       url('./AveniHea.ttf') format('truetype'),
-       url('./AveniHea.svg') format('svg');
+  src: url('../AveniHea.eot');
+  src: url('../AveniHea.eot') format('embedded-opentype'),
+       url('../AveniHea.woff') format('woff'),
+       url('../AveniHea.ttf') format('truetype'),
+       url('../AveniHea.svg') format('svg');
   font-weight: bold;
   font-style: normal;
 }
-*/
 
 body {
   font-family: 'AvenirL', Helvetica, Arial, sans-serif;
