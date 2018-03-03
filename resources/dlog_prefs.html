@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!--
+
+	PATH WARNING!
+	
+	Due to Webpack bundling behaviour (which currently dumps everything in a flat 
+	dir in the plugin Resources folder), keep an eye on where these paths point to
+
+-->
+<html lang="en-UK">
+	<head>
+		<title>Preferences</title>
+<!-- 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=10.0"> -->
+		<link href="./styles.css" media="screen" rel="stylesheet" />
+	</head>
+
+	<body>
+
+		<header>
+			<nav>
+				<div><div id="logo"></div></div>
+				<div><h1>Codex preferences</h1></div>
+				<div><div id="ctrl_close" class="ctrl close" alt="Close" title="Close"></div></div>
+			</nav>
+		</header>
+		
+		<main>
+			<form>
+
+			<table>
+	
+				<tr>
+					<td>
+						<input type="checkbox" name="useIgnoreFlag" id="form_useIgnoreFlag" />
+					</td>
+					<td colspan="2" class="label">
+						<label for="form_useIgnoreFlag">Ignore symbols whose names begin with...</label>
+					</td>
+				</tr>
+			
+				<tr>
+					<td></td>
+					<td width="100%">
+						<input type="text" size="5" maxlength="5" name="ignoreFlag" id="form_ignoreFlag" placeholder="#" />
+						<div class="hint">Max 5 characters</div>
+					</td>
+					<td>
+						<aside>Symbols whose names begin with this text will be '<i>ignored</i>', in that the style guide will note that they exist, but not add or update any details for them.</aside>
+					</td>
+				</tr>
+	
+				<tr class="sep warn">
+					<td colspan="3">
+						<h2>Danger zone</h2>
+						<div></div>
+					</td>
+				</tr>
+	
+				<tr>
+					<td>
+						<input type="checkbox" name="useDebugging" id="form_useDebugging" />
+					</td>
+					<td colspan="2" class="label">
+						<label for="form_useDebugging">Turn on debugging</label>
+					</td>
+				</tr>
+				
+			</table>
+			
+			</form>
+		</main>
+
+		<script src="../dlog_prefs.js"></script>
+	</body>
+</html>

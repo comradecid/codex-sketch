@@ -58,6 +58,11 @@ import {
 // Debugging
 const DEBUG = true;
 
+// Make certain consts available elsewhere
+export {
+	DEBUG
+};
+
 
 /* ---- */
 

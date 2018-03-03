@@ -1,31 +1,31 @@
 {
 	"name": "📖 Codex",
-  "description": "Sketch file -> style guide sync utility",
+  "description": "Add and update entries in your Codex style guide",
   "author": "Cidric Lapin-Tueur",
   "homepage": "http://comradecid.com",
   "version": "1.0",
   "identifier": "com.comradecid.sketch.codex",
   "compatibleVersion": 3,
   "bundleVersion": 1,
-  "icon": "icon_128x128.png",
   "commands": [
     {
       "name": "Update style guide",
-      "identifier": "sync-identifier",
+      "identifier": "update",
       "shortcut": "cmd shift u",
-      "script": "./main.js"
+      "script": "./update.js"
     }, 
     {
       "name": "Preferences",
-      "identifier": "prefs-identifier",
+      "identifier": "prefs",
+      "shortcut": "cmd shift p",
       "script": "./prefs.js"
     }
   ],
   "menu": {
     "title": "📖 Codex",
     "items": [
-      "sync-identifier", 
-      "prefs-identifier"
+      "update", 
+      "prefs"
     ]
   }
 }

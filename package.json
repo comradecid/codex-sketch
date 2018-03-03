@@ -1,5 +1,6 @@
 {
   "name": "codex",
+  "author": "Cidric Lapin-Tueur <cid@comradecid.com> (http://comradecid.com)",
   "version": "0.1.0",
   "engines": {
     "sketch": ">=3.0"
@@ -12,6 +13,9 @@
       "assets/**/*"
     ]
   },
+  "resources": [
+    "resources/**/*.js"
+  ],
   "scripts": {
     "build": "skpm-build",
     "watch": "skpm-build --watch",
@@ -19,9 +23,21 @@
     "postinstall": "npm run build && skpm-link"
   },
   "devDependencies": {
-    "@skpm/builder": "^0.4.0"
+    "@skpm/builder": "^0.4.0",
+    "@skpm/extract-loader": "^1.0.1",
+    "css-loader": "^0.28.10",
+    "html-loader": "^0.5.1"
   },
   "dependencies": {
     "sketch-module-web-view": "^0.2.6"
-  }
+  }, 
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/comradecid/codex-sketch.git"
+  },
+  "keywords": [
+    "sketch",
+    "plugin",
+    "codex"
+  ]
 }
