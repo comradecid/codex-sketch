@@ -42,11 +42,17 @@ Requires the use of:
 - skpm/sketch-module-web-view for generating webview-based windows for interacting with the user
   More info: https://github.com/skpm/sketch-module-web-view
 
+
+TO DO
+
+*** - Webview windows can't currently behave modally; prevent this script from 
+breaking if user has accidentally dismissed document window but not update dlog
+
 */
 
 
 import { 
-	dumpToOutputFile, getConfirmation, showMessage, 
+	dumpToOutputFile, getConfirmation, message, 
 	MSG_SELECT_SYMBOL
 } from './ui.js';
 
@@ -186,19 +192,20 @@ export default function (context) {
 			// User cancelled sync
 	    } else {
 		  
-		    showMessage(sketch, 'Update cancelled.');
+		  	// TMP
+		    message('Update cancelled.');
 	    }
 
 		// User has selected at least one layer, but none are symbols
 		// TODO: Catch for when we have at least one symbol, but all are 'ignored'
 		} else {
 		
-		  showMessage(sketch, MSG_SELECT_SYMBOL);
+		  message(MSG_SELECT_SYMBOL);
 		}
 
 	// User hasn't selected anything
   } else {
 	  
-	  showMessage(sketch, MSG_SELECT_SYMBOL);
+	  message(MSG_SELECT_SYMBOL);
   }
 }

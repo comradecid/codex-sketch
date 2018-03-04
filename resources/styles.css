@@ -83,7 +83,7 @@ html {
 }
 
 *, *:before, *:after {
-  /* Prevent the content from being selectionable */
+  /* Prevent selection of window UI content */
   -webkit-user-select: none;
   user-select: none;
 }

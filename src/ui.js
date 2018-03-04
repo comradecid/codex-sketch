@@ -2,8 +2,26 @@
 
 UI-RELATED RESOURCES ONLY
 
+
+TO DO
+
+*** - REWRITE EVERYTHING AFFECTD BY v49 RELEASE
+*** - Load settings from config file and use them globally
+*** - Get more of these to not depend on 'sketch' object as a param
+*** - Determine if sketch api actions are helpful
+- Add in localisable string management, likely with key-based lookup
+- Determine how to detect locale/user language settings, if possible
+- Collect desired name from user for dumpToOutputFile
+- Add in file overwrite confirmation for dumpToOutputFile
+- Make content generation logic a bit more DRY in getConfirmationContent
+- Find better way of handling these UI strings
+
 */
 
+
+import { 
+	formatFilePath, writeDataToFile
+} from './file.js';
 
 // UI strings and values
 const CONSOLE_ERR_PRFX = '[CODEX](ERR) ';
@@ -12,24 +30,48 @@ const ERR_CONFMSG_NULL = 'Symbols to sync and/or to ignore not provided';
 const ERR_DATAWRITE_NULL = 'Sketch API and/or JSON data not provided';
 const ERR_FILEPATH_NULL = 'No path provided';
 const ERR_JSONSTR_NULL = 'JSON string not provided';
+const ERR_LOADFORM_NULL = 'No form data provided';
 const ERR_LAYER_NULL = 'No layer provided';
-const ERR_MESSAGE_NULL = 'Sketch API and/or message not provided';
 const LBL_CANCEL = 'Cancel';
 const LBL_CHOOSE = 'Choose';
 const LBL_CONTINUE = 'Continue';
+const LBL_EXPORT = 'Export data';
 const LBL_TITLE_CONFIRM_UPDATE = 'Confirm style guide update';
 const MSG_CONFIRM_UPDATE = 'Would you like to update the style guide with the following symbols?';
 const MSG_CONFIRM_IGNORE = 'The following symbols will be ignored, and not synced with the style guide:';
 const MSG_SELECT_SYMBOL = 'Please select at least one symbol.';
+const PREFS_WIN_WIDTH = 640;
+const PREFS_WIN_HEIGHT = 480;
+const PREFS_WIN_TITLE = 'Preferences';
 const ICON_FILE = 'icon_128x128.png';
+const CONFIG_FILENAME = 'codex_config.json'
 const OUTPUT_FILENAME = 'codex_output.json';
 const LBL_LINEITEM = ' · ';
 const SYMBOL_IGNORE_FLAG = '#';
 
 // Make certain consts available elsewhere
 export {
-	MSG_SELECT_SYMBOL, CONSOLE_ERR_PRFX, ERR_LAYER_NULL
+	MSG_SELECT_SYMBOL, CONSOLE_ERR_PRFX, 
+	ERR_DATAWRITE_NULL, ERR_FILEPATH_NULL, ERR_LAYER_NULL, ERR_LOADFORM_NULL, 
+	CONFIG_FILENAME, OUTPUT_FILENAME, PREFS_WIN_WIDTH, PREFS_WIN_HEIGHT
 };
+
+
+/* ---- */
+  
+
+/** Show basic message to user in Sketch window
+	  [!] Performs basic variable checks, but does not validate
+    @param {string} message - Text to show user
+*/
+export function message( message ) {
+
+	if (message !== undefined) {
+	
+	  //sketch.message(message);
+	  context.document.showMessage(message);
+	}
+}
 
 
 /* ---- */
@@ -43,8 +85,6 @@ export {
 export function getConfirmationContent( syncItems, ignoreItems ) {
 
 	if ((syncItems !== undefined) && (ignoreItems !== undefined)) {
-
-		// TODO: Make this more DRY
 
 		let message = MSG_CONFIRM_UPDATE + '\n\n';
 	  let numItems = syncItems.length;
@@ -71,90 +111,6 @@ export function getConfirmationContent( syncItems, ignoreItems ) {
 	} else {
 		
 		console.log(CONSOLE_ERR_PRFX + ERR_CONFMSG_NULL);
-	}
-}
-
-
-/* ---- */
-  
-
-/** Strip file prefix from path string
-	  [!] Performs basic variable checks, but does not validate
-    @param {string} path - Path to clean up
-    @return {string} Cleaned-up path
-*/
-export function formatFilePath( path ) {
-
-	if (path !== undefined) {
-	
-	  path = path.toString();
-		return (0 === path.indexOf("file://")) ? 
-			path.substring(7) : path;
-	
-	} else {
-		
-		console.log(CONSOLE_ERR_PRFX + ERR_FILEPATH_NULL);
-	}
-}
-
-
-/* ---- */
-  
-
-/** Write JSON data to target file
-	  [!] Performs basic variable checks, but does not validate
-    @param {string} data - JSON data to write
-     @param {string} path - Filepath to write to
-*/
-export function writeDataToFile( data, path ) {
-
-	if ((path !== undefined) && (data !== undefined)) {
-	
-		let jsonString = JSON.stringify(data, null, "\t");
-		let content = 
-			NSString.stringWithString(jsonString);
-		let formattedContent = 
-			NSString.stringWithFormat("%@", content);
-		let formattedPath = 
-			NSString.stringWithFormat("%@", path + OUTPUT_FILENAME);
-		
-		formattedContent.writeToFile_atomically_encoding_error(
-			formattedPath, true, NSUTF8StringEncoding, null);
-	
-	} else {
-		
-		console.log(CONSOLE_ERR_PRFX + ERR_DATAWRITE_NULL);
-	}
-}
-
-/*
-function readFile(path) {
-    return NSString.stringWithContentsOfFile_encoding_error(path, NSUTF8StringEncoding, null);
-}
-
-function writeFile(path, content) {
-    const string = NSString.stringWithFormat("%@", content);
-    return string.writeToFile_atomically(path, true);
-}
-*/
-
-/* ---- */
-  
-
-/** Show message to user in Sketch window
-	  [!] Performs basic variable checks, but does not validate
-    @param {string} sketch - Sketch API from context
-    @param {string} message - Text to show user
-*/
-export function showMessage( sketch, message ) {
-
-	if ((sketch !== undefined) && (message !== undefined)) {
-	
-	  sketch.message(message);
-	
-	} else {
-		
-		console.log(CONSOLE_ERR_PRFX + ERR_MESSAGE_NULL);
 	}
 }
 
@@ -220,24 +176,20 @@ export function dumpToOutputFile( data ) {
 		  // NOTE: Currently, this will automatically overwrite any 
 		  // existing dumpfiles, and does not accept name changes
 		  // Always uses same filename, as set by global var
-		  // TODO: Add in overwrite confirmation?
 		  
 		  // Set up 'select folder' dialog
 			let panel = NSOpenPanel.openPanel();
 			panel.setCanChooseDirectories(true);
 			panel.setCanCreateDirectories(true);
 			panel.setCanChooseFiles(false);
-			panel.setPrompt(LBL_CHOOSE);
-
-//open.setTitle("Import a Color Palette");
-//open.setPrompt("Import Palette");
+			panel.setPrompt(LBL_EXPORT);
 
 			// Load file save dialog, capturing click event
 			let clickEvent = panel.runModal();
 			if (clickEvent == NSFileHandlingPanelOKButton) {
 		
 				// Dump data to new file at target directory path
-				writeDataToFile(data, formatFilePath(panel.URL()));
+				writeDataToFile(data, formatFilePath(panel.URL()), OUTPUT_FILENAME);
 			}
 
 		} catch(error) {
