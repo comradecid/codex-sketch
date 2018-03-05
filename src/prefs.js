@@ -31,8 +31,8 @@ import WebUI from 'sketch-module-web-view';
 import { isWebviewPresent, sendToWebview } from 'sketch-module-web-view/remote';
 
 import { 
-	message, 
-	PREFS_WIN_WIDTH, PREFS_WIN_HEIGHT, PREFS_WIN_TITLE, CONFIG_FILENAME
+	uiStrings, message, 
+	PREFS_WIN_WIDTH, PREFS_WIN_HEIGHT, CONFIG_FILENAME
 } from './ui.js';
 
 import { 
@@ -65,7 +65,7 @@ export default function(context) {
 	  height: PREFS_WIN_HEIGHT,
     blurredBackground: true,
     onlyShowCloseButton: true,
-		title: PREFS_WIN_TITLE,
+		title: uiStrings.PREFS_WIN_TITLE,
     hideTitleBar: false,
     shouldKeepAround: true,
 		resizable: false, 

@@ -6,7 +6,7 @@ DATA-PROCESSING RESOURCES ONLY
 
 
 import { 
-	CONSOLE_ERR_PRFX, ERR_LAYER_NULL
+	uiStrings
 } from './ui.js';
 
 
@@ -32,12 +32,12 @@ export function getLayerJSON( layer ) {
 			
 		} catch(error) {
 
-			console.log(CONSOLE_ERR_PRFX + error);
+			console.log(uiStrings.CONSOLE_ERR_PRFX + error);
 		}
 
 	} else {
 		
-		console.log(CONSOLE_ERR_PRFX + ERR_LAYER_NULL);
+		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_LAYER_NULL);
 	}
 }
 

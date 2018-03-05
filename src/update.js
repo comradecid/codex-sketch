@@ -52,8 +52,7 @@ breaking if user has accidentally dismissed document window but not update dlog
 
 
 import { 
-	dumpToOutputFile, getConfirmation, message, 
-	MSG_SELECT_SYMBOL
+	uiStrings, dumpToOutputFile, getConfirmation, message
 } from './ui.js';
 
 import { 

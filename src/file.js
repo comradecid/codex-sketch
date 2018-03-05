@@ -12,7 +12,8 @@ TO DO
 
 
 import { 
-	CONSOLE_ERR_PRFX, ERR_DATAWRITE_NULL, ERR_FILEPATH_NULL, OUTPUT_FILENAME
+	uiStrings, 
+	OUTPUT_FILENAME
 } from './ui.js';
 
 
@@ -65,7 +66,7 @@ export function getPluginsDir( context ) {
 		
 	} else {
 		
-		console.log(CONSOLE_ERR_PRFX + 'Missing context');
+		console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing context');
 	}
 }
 
@@ -88,7 +89,7 @@ export function formatFilePath( path ) {
 	
 	} else {
 		
-		console.log(CONSOLE_ERR_PRFX + ERR_FILEPATH_NULL);
+		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_FILEPATH_NULL);
 	}
 }
 
@@ -134,6 +135,6 @@ export function writeDataToFile( data, path, filename ) {
 	
 	} else {
 		
-		console.log(CONSOLE_ERR_PRFX + ERR_DATAWRITE_NULL);
+		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_DATAWRITE_NULL);
 	}
 }

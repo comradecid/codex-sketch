@@ -24,35 +24,37 @@ import {
 } from './file.js';
 
 // UI strings and values
-const CONSOLE_ERR_PRFX = '[CODEX](ERR) ';
-const ERR_CONFDLOG_NULL = 'Sketch API and/or symbol set not provided';
-const ERR_CONFMSG_NULL = 'Symbols to sync and/or to ignore not provided';
-const ERR_DATAWRITE_NULL = 'Sketch API and/or JSON data not provided';
-const ERR_FILEPATH_NULL = 'No path provided';
-const ERR_JSONSTR_NULL = 'JSON string not provided';
-const ERR_LOADFORM_NULL = 'No form data provided';
-const ERR_LAYER_NULL = 'No layer provided';
-const LBL_CANCEL = 'Cancel';
-const LBL_CHOOSE = 'Choose';
-const LBL_CONTINUE = 'Continue';
-const LBL_EXPORT = 'Export data';
-const LBL_TITLE_CONFIRM_UPDATE = 'Confirm style guide update';
-const MSG_CONFIRM_UPDATE = 'Would you like to update the style guide with the following symbols?';
-const MSG_CONFIRM_IGNORE = 'The following symbols will be ignored, and not synced with the style guide:';
-const MSG_SELECT_SYMBOL = 'Please select at least one symbol.';
+const uiStrings = {
+	CONSOLE_ERR_PRFX : '[CODEX](ERR) ',
+	ERR_CONFDLOG_NULL : 'Sketch API and/or symbol set not provided',
+	ERR_CONFMSG_NULL : 'Symbols to sync and/or to ignore not provided',
+	ERR_DATAWRITE_NULL : 'Sketch API and/or JSON data not provided',
+	ERR_FILEPATH_NULL : 'No path provided',
+	ERR_JSONSTR_NULL : 'JSON string not provided',
+	ERR_LOADFORM_NULL : 'No form data provided',
+	ERR_LAYER_NULL : 'No layer provided',
+	LBL_CANCEL : 'Cancel',
+	LBL_CHOOSE : 'Choose',
+	LBL_CONTINUE : 'Continue',
+	LBL_EXPORT : 'Export data',
+	LBL_TITLE_CONFIRM_UPDATE : 'Confirm style guide update',
+	MSG_CONFIRM_UPDATE : 'Would you like to update the style guide with the following symbols?',
+	MSG_CONFIRM_IGNORE : 'The following symbols will be ignored, and not synced with the style guide:',
+	MSG_SELECT_SYMBOL : 'Please select at least one symbol.',
+	PREFS_WIN_TITLE : 'Preferences',
+	LBL_LINEITEM : ' · '
+};
+
 const PREFS_WIN_WIDTH = 640;
 const PREFS_WIN_HEIGHT = 480;
-const PREFS_WIN_TITLE = 'Preferences';
 const ICON_FILE = 'icon_128x128.png';
-const CONFIG_FILENAME = 'codex_config.json'
+const CONFIG_FILENAME = 'codex_config.json';
 const OUTPUT_FILENAME = 'codex_output.json';
-const LBL_LINEITEM = ' · ';
-const SYMBOL_IGNORE_FLAG = '#';
+const SYMBOL_IGNORE_FLAG = '#';  // TODO: Get rid of this
 
 // Make certain consts available elsewhere
 export {
-	MSG_SELECT_SYMBOL, CONSOLE_ERR_PRFX, 
-	ERR_DATAWRITE_NULL, ERR_FILEPATH_NULL, ERR_LAYER_NULL, ERR_LOADFORM_NULL, 
+	uiStrings, 
 	CONFIG_FILENAME, OUTPUT_FILENAME, PREFS_WIN_WIDTH, PREFS_WIN_HEIGHT
 };
 
@@ -86,31 +88,31 @@ export function getConfirmationContent( syncItems, ignoreItems ) {
 
 	if ((syncItems !== undefined) && (ignoreItems !== undefined)) {
 
-		let message = MSG_CONFIRM_UPDATE + '\n\n';
+		let message = uiStrings.MSG_CONFIRM_UPDATE + '\n\n';
 	  let numItems = syncItems.length;
 		let i = numItems;
 	  while (i > 0) {
 		  
 		  i--;
 		  message += syncItems[i].name;
-		  message += (i > 0) ? LBL_LINEITEM : '';
+		  message += (i > 0) ? uiStrings.LBL_LINEITEM : '';
 	  }
 	  
-		message += '\n\n' + MSG_CONFIRM_IGNORE + '\n\n';
+		message += '\n\n' + uiStrings.MSG_CONFIRM_IGNORE + '\n\n';
 		numItems = ignoreItems.length;
 	  i = numItems;
 	  while (i > 0) {
 
 		  i--;
 		  message += ignoreItems[i];
-		  message += (i > 0) ? LBL_LINEITEM : '';
+		  message += (i > 0) ? uiStrings.LBL_LINEITEM : '';
 	  }
 	  
 	  return message + '\n';
 	
 	} else {
 		
-		console.log(CONSOLE_ERR_PRFX + ERR_CONFMSG_NULL);
+		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_CONFMSG_NULL);
 	}
 }
 
@@ -137,9 +139,9 @@ export function getConfirmation( sketch, syncItems, ignoreItems ) {
 			// Set up confirmation dialog
 			let alert = NSAlert.alloc().init();
 			alert.setIcon(iconImage);
-			alert.addButtonWithTitle(LBL_CONTINUE);
-			alert.addButtonWithTitle(LBL_CANCEL);
-			alert.setMessageText(LBL_TITLE_CONFIRM_UPDATE);
+			alert.addButtonWithTitle(uiStrings.LBL_CONTINUE);
+			alert.addButtonWithTitle(uiStrings.LBL_CANCEL);
+			alert.setMessageText(uiStrings.LBL_TITLE_CONFIRM_UPDATE);
 		  alert.setInformativeText(getConfirmationContent(syncItems, ignoreItems));
 		  
 		  // Load confirmation dialog, returning click event
@@ -148,13 +150,13 @@ export function getConfirmation( sketch, syncItems, ignoreItems ) {
 
 		} catch(error) {
 
-			console.log(CONSOLE_ERR_PRFX + error);
+			console.log(uiStrings.CONSOLE_ERR_PRFX + error);
 			return false;
 		}
   
 	} else {
 		
-		console.log(CONSOLE_ERR_PRFX + ERR_CONFDLOG_NULL);
+		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_CONFDLOG_NULL);
 		return false;
 	}
 }
@@ -182,7 +184,7 @@ export function dumpToOutputFile( data ) {
 			panel.setCanChooseDirectories(true);
 			panel.setCanCreateDirectories(true);
 			panel.setCanChooseFiles(false);
-			panel.setPrompt(LBL_EXPORT);
+			panel.setPrompt(uiStrings.LBL_EXPORT);
 
 			// Load file save dialog, capturing click event
 			let clickEvent = panel.runModal();
@@ -194,11 +196,11 @@ export function dumpToOutputFile( data ) {
 
 		} catch(error) {
 
-			console.log(CONSOLE_ERR_PRFX + error);
+			console.log(uiStrings.CONSOLE_ERR_PRFX + error);
 		}
 		
 	} else {
 		
-		console.log(CONSOLE_ERR_PRFX + ERR_JSONSTR_NULL);
+		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_JSONSTR_NULL);
 	}
 }
