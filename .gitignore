@@ -1,5 +1,6 @@
-# build artifacts
+# build/run artefacts
 *.sketchplugin
+codex_config.json
 
 # npm
 node_modules
