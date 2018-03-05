@@ -9,6 +9,7 @@ TO DO
 *** - Load settings from config file and use them globally
 *** - Get more of these to not depend on 'sketch' object as a param
 *** - Determine if sketch api actions are helpful
+- Allow selection of files in folder lookup dialog
 - Add in localisable string management, likely with key-based lookup
 - Determine how to detect locale/user language settings, if possible
 - Collect desired name from user for dumpToOutputFile

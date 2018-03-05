@@ -13,7 +13,6 @@ More info: https://developer.apple.com/reference/webkit/webuidelegate?language=o
 TO DO
 
 *** - Find a way to make webview windows behave in a modal fashion
-- As soon as dlog loads, get getPluginsDir, and store path somewhere for re-use
 - sketch-module-web-view doesn't currently support click-and-drag support for 
   the window when the title bar is hidden; this needs to be accounted for when 
   this functionality is eventually available

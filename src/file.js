@@ -20,28 +20,6 @@ import {
 
 
 /* ---- */
-  
-
-/*
-function readFile(path) {
-    return NSString.stringWithContentsOfFile_encoding_error(path, NSUTF8StringEncoding, null);
-}
-
-function writeFile(path, content) {
-    const string = NSString.stringWithFormat("%@", content);
-    return string.writeToFile_atomically(path, true);
-}
-*/
-
-/*
-	  NSFileManager *fileManager = [[NSFileManager alloc] init];
-    NSString *fontPath = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"Fonts"];
- 
-    if ([fileManager fileExistsAtPath:path isDirectory:&isDir])
-*/
-
-
-/* ---- */
 
 
 /** Get parent directory for this plugin (usually the Sketch plugin directory)
@@ -113,8 +91,6 @@ export function writeDataToFile( data, path, filename ) {
 		// Double-check value just in case it got munged due to eval
 		if ((typeof data) === 'object') {
 
-			//jsonString = JSON.stringify(data, null, "\t");
-// TODO: Figure out why stringify doesnt work with above params
 			data += '';
 		}
 

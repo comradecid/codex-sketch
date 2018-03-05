@@ -46,7 +46,13 @@ Requires the use of:
 TO DO
 
 *** - Webview windows can't currently behave modally; prevent this script from 
-breaking if user has accidentally dismissed document window but not update dlog
+  breaking if user has accidentally dismissed document window but not update 
+  dlog
+*** - Fix data format dump to file
+- Remove double-write to syncSymbols, ignoreSymbolNames
+- How do we deal with local overrides?
+- Handle diffs between instances and masters
+- Recurse symbol processing
 
 */
 
@@ -59,14 +65,21 @@ import {
 	getLayerJSON
 } from './data.js';
 
+import { 
+	getPrefs
+} from './prefs.js';
 
-// Debugging
-const DEBUG = true;  // TODO: Get rid of this
+// Identifiers
+const LAYER_TYPE_SYMBOL_INSTANCE = 'MSSymbolInstance';
+const LAYER_TYPE_SYMBOL_MASTER = 'MSSymbolMaster';
+const SYMBOL_IGNORE_FLAG = '#';  // TODO: Get rid of this
 
-// Make certain consts available elsewhere
-export {
-	DEBUG
-};  // TODO: Get rid of this
+// Main sketch objects and other resources
+const sketch = context.api();
+
+// Containers to hold selected symbols
+const syncSymbols = [];
+const ignoreSymbolNames = [];
 
 
 /* ---- */
@@ -81,84 +94,12 @@ export {
  */
 export default function (context) {
 
-	// Identifiers
-	const LAYER_TYPE_SYMBOL_INSTANCE = 'MSSymbolInstance';
-	const LAYER_TYPE_SYMBOL_MASTER = 'MSSymbolMaster';
-	const SYMBOL_IGNORE_FLAG = '#';
-
-	// Main sketch objects and other resources
-	const sketch = context.api();
-  const selectedLayers = sketch.selectedDocument.selectedPage.selectedLayers;	
-  
-  // Containers to hold selected symbols
-  const syncSymbols = [];
-  const ignoreSymbolNames = [];
-  
+	// Get user-selected symbols
+  const selectedLayers = sketch.selectedDocument.selectedPage.selectedLayers;
+ 
   /* ---- */
 
-	// If this layer is a symbol master, recurse through it and grab any other
-	// children that are dependent symbols
-	// If this layer is a symbol instance, grab its master and use that for 
-	// recursive examination
-	// TODO: How do we deal with local overrides?
-  function processLayer( layer ) {
-		    
-    let layerClass = layer.sketchObject.className();
-    
-    // If this is a symbol...
-    // TODO: handle diffs between instances and masters
-    // TODO: Recurse this!
-    if ((layerClass == LAYER_TYPE_SYMBOL_INSTANCE) || 
-    	  (layerClass == LAYER_TYPE_SYMBOL_MASTER)) {
-
-			// Get name of symbol first, to determine if it should be ignored
-			let layerName = String(layer.sketchObject.name());
-
-			// Get JSON for selected symbol
-			// If name includes ignore flag, ignore it; otherwise, ready it for sync
-			let jsonString = getLayerJSON(layer);
-
-/*
-		  for (let i in symbols) {
-		  
-		  	// Parse stringified JSON back into real JSON, 
-		  	// both to read values and allow for file dump later
-		  	// TODO: Possibly hide actual symbol names, and move this to debug
-		    symbols[i] = JSON.parse(symbols[i]);
-				name = symbols[i].name;
-				
-				// If 'ignore' flag is found, add this to the 'ignore' list
-				if (0 === (name.indexOf(SYMBOL_IGNORE_FLAG))) {
-					
-					ignoreList.push(symbols[i].name);
-				
-				} else {
-	
-					message += (i > 0) ? LBL_LINEITEM : '';
-					message += symbols[i].name;
-				}
-		  }
-		  
-		  numIgnores = ignoreList.length;
-		  if (numIgnores > 0) {
-			  
-			  message += '\n\n' + MSG_CONFIRM_IGNORE + '\n\n';
-			  
-			  for (let i in ignoreList) {
-				  
-				  message += (i > 0) ? LBL_LINEITEM : '';
-					message += ignoreList[i];
-			  }
-		  }
-*/
-
-			// TODO: Re-account for ignored items
-			syncSymbols.push(jsonString);
-			ignoreSymbolNames.push(layerName);
-    }
-  }
-
-  /* ---- */
+try {
 
   // If user has selected at least one item...
   if (selectedLayers.length > 0) {
@@ -178,14 +119,19 @@ export default function (context) {
 	    // If user has opted to continue...
 	    if (confirmed) {
 		  
+		  	// TMP
+		  	let dataString = JSON.stringify(syncSymbols, null, "\t");
+		  	let prefs = getPrefs();
+
 				// Debug: dump JSON to file, instead of pushing to server
-				if (DEBUG) {
-		
-					dumpToOutputFile(syncSymbols);
+				if (prefs.useDebugging) {
+
+					dumpToOutputFile(dataString);
 				
 				} else {
 					
 					// Push it to server
+					message('(do stuff)');
 				}
 
 			// User cancelled sync
@@ -199,12 +145,83 @@ export default function (context) {
 		// TODO: Catch for when we have at least one symbol, but all are 'ignored'
 		} else {
 		
-		  message(MSG_SELECT_SYMBOL);
+		  message(uiStrings.MSG_SELECT_SYMBOL);
 		}
 
 	// User hasn't selected anything
   } else {
 	  
-	  message(MSG_SELECT_SYMBOL);
+	  message(uiStrings.MSG_SELECT_SYMBOL);
+  }
+
+} catch(error) {
+  console.log(error);	
+}
+
+}
+
+
+/* ---- */
+
+
+/** Local utility function: process symbol for possible sync with style guide
+*/
+// If this layer is a symbol master, recurse through it and grab any other
+// children that are dependent symbols
+// If this layer is a symbol instance, grab its master and use that for 
+// recursive examination
+function processLayer( layer ) {
+	    
+  let layerClass = layer.sketchObject.className();
+  
+  // If this is a symbol...
+  if ((layerClass == LAYER_TYPE_SYMBOL_INSTANCE) || 
+  	  (layerClass == LAYER_TYPE_SYMBOL_MASTER)) {
+
+		// Get name of symbol first, to determine if it should be ignored
+		let layerName = String(layer.sketchObject.name());
+
+		// Get JSON for selected symbol
+		// If name includes ignore flag, ignore it; otherwise, ready it for sync
+		let jsonString = getLayerJSON(layer);
+
+/*
+	  for (let i in symbols) {
+	  
+	  	// Parse stringified JSON back into real JSON, 
+	  	// both to read values and allow for file dump later
+	  	// TODO: Possibly hide actual symbol names, and move this to debug
+	    symbols[i] = JSON.parse(symbols[i]);
+			name = symbols[i].name;
+			
+			// If 'ignore' flag is found, add this to the 'ignore' list
+			if (0 === (name.indexOf(SYMBOL_IGNORE_FLAG))) {
+				
+				ignoreList.push(symbols[i].name);
+			
+			} else {
+
+				message += (i > 0) ? uiStrings.LBL_LINEITEM : '';
+				message += symbols[i].name;
+			}
+	  }
+	  
+	  numIgnores = ignoreList.length;
+	  if (numIgnores > 0) {
+		  
+		  message += '\n\n' + uiStrings.MSG_CONFIRM_IGNORE + '\n\n';
+		  
+		  for (let i in ignoreList) {
+			  
+			  message += (i > 0) ? uiStrings.LBL_LINEITEM : '';
+				message += ignoreList[i];
+		  }
+	  }
+*/
+
+		// TODO: Re-account for ignored items
+		syncSymbols.push(jsonString);
+		ignoreSymbolNames.push(layerName);
   }
 }
+ 
