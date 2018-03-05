@@ -22,32 +22,36 @@ TO DO
   Sketch plist file)
 - Determine whether webview dialogs should be further abstracted and moved to 
   ui.js
-- Lock UI when reading/writing config file?
+- Handle instances where user quits before closing dialog, as it fails to save
+- Determine which functions need to be exported, and which can stay private
 
 */
 
 
 import WebUI from 'sketch-module-web-view';
-import { isWebviewPresent, sendToWebview } from 'sketch-module-web-view/remote';
 
 import { 
 	uiStrings, message, 
-	PREFS_WIN_WIDTH, PREFS_WIN_HEIGHT, CONFIG_FILENAME
+	PREFS_WIN_WIDTH, PREFS_WIN_HEIGHT
 } from './ui.js';
 
 import { 
-	writeDataToFile, getPluginsDir
+	writeDataToFile, readDataFromFile, getPluginsDir
 } from './file.js';
 
 // Default configuration, in case it isn't found where expected
-const DEFAULT_CONFIG = {
+const DEFAULT_USER_CONFIG = {
 	ignoreFlag : '#', 
 	useIgnoreFlag : true, 
 	useDebugging : true
 };
 
-
+// Config file and path info
+const CONFIG_FILENAME = 'codex_config.json';
 const pluginsDir = getPluginsDir(context);
+
+// Container for user preferences; empty until we load from file
+let userConfig = {};
 
 
 /* ---- */
@@ -57,6 +61,7 @@ const pluginsDir = getPluginsDir(context);
 */
 export default function(context) {
 	
+	// Create webview dialog
   const webUI = new WebUI(context, require('../resources/dlog_prefs.html'), {
     identifier: 'codex.prefs', // Unique ID for referring to this dialog
     x: 0,
@@ -73,17 +78,10 @@ export default function(context) {
 	    
 	    // Serves as an 'onload' handler for page in webview
       'webView:didFinishLoadForFrame:'(webView, webFrame) {
-	      
-        // Load configuration file
-        // TMP
-				let data = {
-				
-					ignoreFlag : '#', 
-					useIgnoreFlag : true, 
-					useDebugging : true
-				};
-				let dataString = JSON.stringify(data);
-// TODO: dataString is still getting interpreted as an object
+        
+				// TODO: dataString is still getting interpreted as an object;
+				//       find another way of handling this?
+				let dataString = JSON.stringify(getPrefs());
         // Populate webview form with values
         webUI.eval(`loadFormValues(${dataString})`);
       }
@@ -106,6 +104,41 @@ export default function(context) {
       
     }
   })
+}
+
+
+/* ---- */
+
+
+/** Get user preferences
+	  [!] Performs basic variable checks, but does not validate
+	  [!] Will return default settings if no saved settings are found!
+    @return {object} — User preferences
+*/
+export function getPrefs() {
+	
+  // If preferences haven't been loaded yet...
+  if (objEmpty(userConfig)) {
+		
+		// Load configuration file
+		let prefsData = readDataFromFile(pluginsDir + CONFIG_FILENAME);
+		prefsData = JSON.parse(prefsData);
+		
+		// If we got a null result from the file load attempt, 
+		// populate with default settings and save in new config file 
+		if (prefsData === null) {
+			
+			userConfig = DEFAULT_USER_CONFIG;
+			writeDataToFile(userConfig, pluginsDir, CONFIG_FILENAME);
+		
+		// Otherwise, populate using data from file
+		} else {
+			
+			userConfig = prefsData;
+		}
+  }
+  
+  return userConfig;
 }
 
 
@@ -135,4 +168,16 @@ function handleClose( webUI, closeWindow ) {
 		
 		console.log('ERROR:', error);
 	}
+}
+
+
+/* ---- */
+
+
+/** Local utility: check if prefs object is empty
+*/
+function objEmpty( obj ) {
+	
+	return ((Object.keys(obj).length === 0) && 
+		(obj.constructor === Object));
 }

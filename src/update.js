@@ -61,12 +61,12 @@ import {
 
 
 // Debugging
-const DEBUG = true;
+const DEBUG = true;  // TODO: Get rid of this
 
 // Make certain consts available elsewhere
 export {
 	DEBUG
-};
+};  // TODO: Get rid of this
 
 
 /* ---- */

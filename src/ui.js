@@ -15,6 +15,7 @@ TO DO
 - Add in file overwrite confirmation for dumpToOutputFile
 - Make content generation logic a bit more DRY in getConfirmationContent
 - Find better way of handling these UI strings
+- Determine which functions need to be exported, and which can stay private
 
 */
 
@@ -48,14 +49,13 @@ const uiStrings = {
 const PREFS_WIN_WIDTH = 640;
 const PREFS_WIN_HEIGHT = 480;
 const ICON_FILE = 'icon_128x128.png';
-const CONFIG_FILENAME = 'codex_config.json';
 const OUTPUT_FILENAME = 'codex_output.json';
 const SYMBOL_IGNORE_FLAG = '#';  // TODO: Get rid of this
 
 // Make certain consts available elsewhere
 export {
 	uiStrings, 
-	CONFIG_FILENAME, OUTPUT_FILENAME, PREFS_WIN_WIDTH, PREFS_WIN_HEIGHT
+	OUTPUT_FILENAME, PREFS_WIN_WIDTH, PREFS_WIN_HEIGHT
 };
 
 

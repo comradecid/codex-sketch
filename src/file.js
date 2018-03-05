@@ -2,11 +2,13 @@
 
 FILE-MANAGEMENT RESOURCES ONLY
 
+
 TO DO
 
 - Add in optional file overwrite confirmation check for writeDataToFile
 - Add in error catch if we don't have a valid string to write to file for 
   writeDataToFile
+- Determine which functions need to be exported, and which can stay private
 
 */
 
@@ -94,7 +96,6 @@ export function formatFilePath( path ) {
 }
 
 
-
 /* ---- */
 
 
@@ -136,5 +137,37 @@ export function writeDataToFile( data, path, filename ) {
 	} else {
 		
 		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_DATAWRITE_NULL);
+	}
+}
+
+
+/* ---- */
+
+
+/** Read JSON data from target file
+	  [!] Performs basic variable checks, but does not validate
+	  [!] Will return empty object if file does not exist!
+    @param {string} path - Filepath to write to
+    @return {object} — File contents
+*/
+export function readDataFromFile( path ) {
+	
+	if (path !== undefined) {
+		
+		try {
+
+			let formattedPath = 
+				NSString.stringWithFormat("%@", path);
+			return NSString.stringWithContentsOfFile_encoding_error(
+				formattedPath, NSUTF8StringEncoding, null);
+
+		} catch(error) {
+
+			console.log(uiStrings.CONSOLE_ERR_PRFX + error);
+		}
+		
+	} else {
+		
+		console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing path');
 	}
 }
