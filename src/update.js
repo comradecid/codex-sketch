@@ -108,9 +108,12 @@ const sketch = context.api();
 let syncSymbols = [];
 let ignoreSymbolNames = [];
 
-// Get user preferences for key behaviour
+// Get user preferences for key behaviour; store as variables to avoid repeated 
+/// lookups
 let prefs = getPrefs();
+let useIgnoreFlag = prefs.useIgnoreFlag;
 let ignoreFlag = prefs.ignoreFlag;
+let useDebugging = prefs.useDebugging;
 
 
 /* ---- */
@@ -154,7 +157,7 @@ try {
 		  	let dataString = JSON.stringify(syncSymbols, null, "\t");
 
 				// Debug: dump JSON to file, instead of pushing to server
-				if (prefs.useDebugging) {
+				if (useDebugging) {
 
 					dumpToOutputFile(dataString);
 				
@@ -212,20 +215,17 @@ function processLayer( layer ) {
 
 		// Get JSON for selected symbol
 		// If name includes ignore flag, ignore it; otherwise, ready it for sync
-		// TODO: Is this a *string*???
-//console.log(jsonString);
-		let jsonString = getLayerJSON(layer);
+		let jsonData = getLayerJSON(layer);
 
 		// If 'ignore' flag is found, add this to the 'ignore' list
-		if (0 === (layerName.indexOf(ignoreFlag))) {
+		if (useIgnoreFlag && (0 === (layerName.indexOf(ignoreFlag)))) {
 			
 			ignoreSymbolNames.push(layerName);
-			
-			// TODO: Mark symbol as 'ignore'
+			jsonData.ignore = true;
 		}
 		
 		// Add symbol to the sync list
-		syncSymbols.push(jsonString);
+		syncSymbols.push(jsonData);
   }
 }
  

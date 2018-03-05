@@ -25,6 +25,7 @@ TO DO
 - Determine which functions need to be exported, and which can stay private
 - Determine if/how it'd be possible to store an encrypted auth key locally in 
   Sketch user prefs
+- Build in disabling/enabling for parent-dependent subfields
 
 NSNonactivatingPanelMask
 
@@ -76,7 +77,7 @@ export default function(context) {
 	  height: PREFS_WIN_HEIGHT,
     blurredBackground: true,
     onlyShowCloseButton: true,
-		title: uiStrings.PREFS_WIN_TITLE,
+		title: uiStrings.LBL_PREFS_WIN,
     hideTitleBar: false,
     shouldKeepAround: true,
 		resizable: false, 

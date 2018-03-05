@@ -45,7 +45,8 @@ const uiStrings = {
 	MSG_CONFIRM_UPDATE : 'Would you like to update the style guide with the following symbols?',
 	MSG_CONFIRM_IGNORE : 'The following symbols will be ignored, and not synced with the style guide:',
 	MSG_SELECT_SYMBOL : 'Please select at least one symbol.',
-	PREFS_WIN_TITLE : 'Preferences',
+	LBL_ABOUT_WIN : 'About Codex', 
+	LBL_PREFS_WIN : 'Preferences',
 	LBL_LINEITEM : ' · '
 };
 
