@@ -17,6 +17,8 @@ TO DO
 - Make content generation logic a bit more DRY in getConfirmationContent
 - Find better way of handling these UI strings
 - Determine which functions need to be exported, and which can stay private
+- Check for shortcut conflicts with other plugins
+- Add ability to change shortcuts for menu commands via dialog
 
 */
 
@@ -47,16 +49,12 @@ const uiStrings = {
 	LBL_LINEITEM : ' · '
 };
 
-const PREFS_WIN_WIDTH = 640;
-const PREFS_WIN_HEIGHT = 480;
+// Other constants
 const ICON_FILE = 'icon_128x128.png';
-const OUTPUT_FILENAME = 'codex_output.json';
-const SYMBOL_IGNORE_FLAG = '#';  // TODO: Get rid of this
 
 // Make certain consts available elsewhere
 export {
-	uiStrings, 
-	OUTPUT_FILENAME, PREFS_WIN_WIDTH, PREFS_WIN_HEIGHT
+	uiStrings
 };
 
 
@@ -159,49 +157,5 @@ export function getConfirmation( sketch, syncItems, ignoreItems ) {
 		
 		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_CONFDLOG_NULL);
 		return false;
-	}
-}
-
-
-/* ---- */
-  
-
-/** Display save file dialog to capture output
-	  [!] Performs basic variable checks, but does not validate
-    @param {string} jsonString — Content to save as JSON	
-*/
-export function dumpToOutputFile( data ) {
-
-	if (data !== undefined) {
-
-		try {
-			
-		  // NOTE: Currently, this will automatically overwrite any 
-		  // existing dumpfiles, and does not accept name changes
-		  // Always uses same filename, as set by global var
-		  
-		  // Set up 'select folder' dialog
-			let panel = NSOpenPanel.openPanel();
-			panel.setCanChooseDirectories(true);
-			panel.setCanCreateDirectories(true);
-			panel.setCanChooseFiles(false);
-			panel.setPrompt(uiStrings.LBL_EXPORT);
-
-			// Load file save dialog, capturing click event
-			let clickEvent = panel.runModal();
-			if (clickEvent == NSFileHandlingPanelOKButton) {
-		
-				// Dump data to new file at target directory path
-				writeDataToFile(data, formatFilePath(panel.URL()), OUTPUT_FILENAME);
-			}
-
-		} catch(error) {
-
-			console.log(uiStrings.CONSOLE_ERR_PRFX + error);
-		}
-		
-	} else {
-		
-		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_JSONSTR_NULL);
 	}
 }

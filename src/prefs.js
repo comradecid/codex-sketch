@@ -23,6 +23,10 @@ TO DO
   ui.js
 - Handle instances where user quits before closing dialog, as it fails to save
 - Determine which functions need to be exported, and which can stay private
+- Determine if/how it'd be possible to store an encrypted auth key locally in 
+  Sketch user prefs
+
+NSNonactivatingPanelMask
 
 */
 
@@ -30,8 +34,7 @@ TO DO
 import WebUI from 'sketch-module-web-view';
 
 import { 
-	uiStrings, message, 
-	PREFS_WIN_WIDTH, PREFS_WIN_HEIGHT
+	uiStrings, message
 } from './ui.js';
 
 import { 
@@ -48,6 +51,10 @@ const DEFAULT_USER_CONFIG = {
 // Config file and path info
 const CONFIG_FILENAME = 'codex_config.json';
 const pluginsDir = getPluginsDir(context);
+
+// Other constants
+const PREFS_WIN_WIDTH = 640;
+const PREFS_WIN_HEIGHT = 800;
 
 // Container for user preferences; empty until we load from file
 let userConfig = {};

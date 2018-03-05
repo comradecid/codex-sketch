@@ -19,13 +19,20 @@
       "identifier": "prefs",
       "shortcut": "cmd shift p",
       "script": "./prefs.js"
+    }, 
+    {
+      "name": "About Codex",
+      "identifier": "about",
+      "script": "./about.js"
     }
   ],
   "menu": {
     "title": "📖 Codex",
     "items": [
       "update", 
-      "prefs"
+      "prefs", 
+      "-",
+      "about"
     ]
   }
 }

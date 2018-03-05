@@ -53,13 +53,40 @@ TO DO
 - How do we deal with local overrides?
 - Handle diffs between instances and masters
 - Recurse symbol processing
+- Catch for when we have at least one symbol, but all are 'ignored'
+- Consider the use of actions for certain handling:
+
+    {
+      "script": "script.js",
+      "handlers": {
+        "actions": {
+          "Startup" : "onStart"
+        }
+      }
+    },
+    {
+      "script": "script.js",
+      "handlers": {
+        "actions": {
+          "OpenDocument" : "onDocOpen"
+        }
+      }
+    }
+    
+- Examine where action-driven scripts could make certain intelligibility and 
+  maintencance of the the code easier (ex: startup -> declare global resources, 
+  check authentication, preload prefs, etc.)
 
 */
 
 
 import { 
-	uiStrings, dumpToOutputFile, getConfirmation, message
+	uiStrings, getConfirmation, message
 } from './ui.js';
+
+import {
+	dumpToOutputFile
+} from './file.js';
 
 import { 
 	getLayerJSON
@@ -78,8 +105,12 @@ const SYMBOL_IGNORE_FLAG = '#';  // TODO: Get rid of this
 const sketch = context.api();
 
 // Containers to hold selected symbols
-const syncSymbols = [];
-const ignoreSymbolNames = [];
+let syncSymbols = [];
+let ignoreSymbolNames = [];
+
+// Get user preferences for key behaviour
+let prefs = getPrefs();
+let ignoreFlag = prefs.ignoreFlag;
 
 
 /* ---- */
@@ -96,7 +127,7 @@ export default function (context) {
 
 	// Get user-selected symbols
   const selectedLayers = sketch.selectedDocument.selectedPage.selectedLayers;
- 
+  
   /* ---- */
 
 try {
@@ -121,7 +152,6 @@ try {
 		  
 		  	// TMP
 		  	let dataString = JSON.stringify(syncSymbols, null, "\t");
-		  	let prefs = getPrefs();
 
 				// Debug: dump JSON to file, instead of pushing to server
 				if (prefs.useDebugging) {
@@ -142,7 +172,6 @@ try {
 	    }
 
 		// User has selected at least one layer, but none are symbols
-		// TODO: Catch for when we have at least one symbol, but all are 'ignored'
 		} else {
 		
 		  message(uiStrings.MSG_SELECT_SYMBOL);
@@ -183,45 +212,20 @@ function processLayer( layer ) {
 
 		// Get JSON for selected symbol
 		// If name includes ignore flag, ignore it; otherwise, ready it for sync
+		// TODO: Is this a *string*???
+//console.log(jsonString);
 		let jsonString = getLayerJSON(layer);
 
-/*
-	  for (let i in symbols) {
-	  
-	  	// Parse stringified JSON back into real JSON, 
-	  	// both to read values and allow for file dump later
-	  	// TODO: Possibly hide actual symbol names, and move this to debug
-	    symbols[i] = JSON.parse(symbols[i]);
-			name = symbols[i].name;
+		// If 'ignore' flag is found, add this to the 'ignore' list
+		if (0 === (layerName.indexOf(ignoreFlag))) {
 			
-			// If 'ignore' flag is found, add this to the 'ignore' list
-			if (0 === (name.indexOf(SYMBOL_IGNORE_FLAG))) {
-				
-				ignoreList.push(symbols[i].name);
+			ignoreSymbolNames.push(layerName);
 			
-			} else {
-
-				message += (i > 0) ? uiStrings.LBL_LINEITEM : '';
-				message += symbols[i].name;
-			}
-	  }
-	  
-	  numIgnores = ignoreList.length;
-	  if (numIgnores > 0) {
-		  
-		  message += '\n\n' + uiStrings.MSG_CONFIRM_IGNORE + '\n\n';
-		  
-		  for (let i in ignoreList) {
-			  
-			  message += (i > 0) ? uiStrings.LBL_LINEITEM : '';
-				message += ignoreList[i];
-		  }
-	  }
-*/
-
-		// TODO: Re-account for ignored items
+			// TODO: Mark symbol as 'ignore'
+		}
+		
+		// Add symbol to the sync list
 		syncSymbols.push(jsonString);
-		ignoreSymbolNames.push(layerName);
   }
 }
  
