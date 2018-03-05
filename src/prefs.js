@@ -12,7 +12,12 @@ More info: https://developer.apple.com/reference/webkit/webuidelegate?language=o
 
 TO DO
 
-*** - Find a way to make webview windows behave in a modal fashion
+*** - Find a way to make webview windows behave in a modal fashion; currently, 
+	if focus isn't placed on a form field, typing on the keyboard can trigger 
+	commands in the main app menus; also, it is possible to launch other actions 
+	while one is already in progress
+*** - Handle situations where user isn't authenticated, and thus cannot sync to 
+	db
 - sketch-module-web-view doesn't currently support click-and-drag support for 
   the window when the title bar is hidden; this needs to be accounted for when 
   this functionality is eventually available
@@ -26,6 +31,8 @@ TO DO
 - Determine if/how it'd be possible to store an encrypted auth key locally in 
   Sketch user prefs
 - Build in disabling/enabling for parent-dependent subfields
+- Build in handling for catastrophic error-handling when parsing config; if file 
+	contents somehow get munged, revert to defaults and tell user
 
 NSNonactivatingPanelMask
 

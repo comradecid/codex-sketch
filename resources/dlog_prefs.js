@@ -29,6 +29,13 @@ document.getElementById('ctrl_close').addEventListener('click', function () {
 });
 
 
+// Toggle disable on subfields
+document.getElementById('form_useIgnoreFlag').addEventListener('click', function () {
+	
+  setSubfields('form_useIgnoreFlag');
+});
+
+
 /* ---- */
   
 
@@ -54,6 +61,8 @@ window.loadFormValues = function( data ) {
 		// Tack this on to the window for later use
 		window.formData = data;
 	}
+	
+	setSubfields('form_useIgnoreFlag');
 }
 
 
@@ -83,6 +92,29 @@ window.getFormValues = function() {
 		 	document.getElementById('form_useDebugging').checked;
 		
 		return JSON.stringify(window.formData);
+	}
+}
+
+
+/* ---- */
+
+
+/** Local utility function: Show/hide subfields for target form element
+    @param {string} id — Id of form element for which to handle subfield display
+*/
+function setSubfields( id ) {
+
+  let elem = document.getElementById(id);
+  
+	if ((id !== undefined) && (elem !== null)) {
+	
+		switch(id) {
+			
+			case 'form_useIgnoreFlag':
+			  document.getElementById('useIgnoreFlag_0').style.display = 
+			  	(elem.checked) ? 'table-row' : 'none';
+				break;
+		}
 	}
 }
 
