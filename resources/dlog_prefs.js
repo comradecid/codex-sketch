@@ -3,6 +3,8 @@
 TO DO
 
 *** - Build in basic inline validation for fields
+*** - Account for instances where sanitising a field leaves it empty
+*** - Build in at least basic inline validation
 - Build in error-checking for loadFormValues, in case a given property in the 
   data set doesn't already exist?
 
@@ -75,7 +77,7 @@ window.loadFormValues = function( data ) {
 window.getFormValues = function() {
 	
 	if (window.formData !== undefined) {
-	
+
 		// Due to varying means of respresenting value on each field, 
 		// get each individually
 		
@@ -85,7 +87,7 @@ window.getFormValues = function() {
 		
 		// 'Ignore' flag
 		window.formData.ignoreFlag = 
-			document.getElementById('form_ignoreFlag').value;
+			jsonSanitize(document.getElementById('form_ignoreFlag').value);
 		
 		// Use debugging tools
 		window.formData.useDebugging = 
@@ -115,6 +117,32 @@ function setSubfields( id ) {
 			  	(elem.checked) ? 'table-row' : 'none';
 				break;
 		}
+	}
+}
+
+
+/* ---- */
+
+
+/** Local utility: sanitise input, to avoid JSON breakages
+		Strip any potentially dangerous characters: [,],{,},:,,
+*/
+function jsonSanitize( value ) {
+	
+	if (value !== undefined) {
+		
+		let newValue = value.toString();
+		let illegalChars = [
+			/\[/g, /\]/g, /{/g, /}/g, /;/g, /,/g
+		];
+		let numIllegalChars = illegalChars.length;
+		
+		for (let i = 0;  i < numIllegalChars; i++) {
+			
+			newValue = newValue.replace(illegalChars[i], '');
+		}
+		
+		return newValue;
 	}
 }
 

@@ -192,6 +192,9 @@ function handleClose( webUI, closeWindow ) {
 */
 function objEmpty( obj ) {
 	
-	return ((Object.keys(obj).length === 0) && 
-		(obj.constructor === Object));
+	if (obj !== undefined) {
+
+		return ((Object.keys(obj).length === 0) && 
+			(obj.constructor === Object));
+	}
 }
