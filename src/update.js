@@ -49,12 +49,13 @@ TO DO
   breaking if user has accidentally dismissed document window but not update 
   dlog
 *** - Fix data format dump to file
-- Remove double-write to syncSymbols, ignoreSymbolNames
+*** - Examine v49 API changes and make revisions to code accordingly
+- Remove double-write to syncSymbols, ignoreSymbolNames?
 - How do we deal with local overrides?
 - Handle diffs between instances and masters
 - Recurse symbol processing
 - Catch for when we have at least one symbol, but all are 'ignored'
-- Consider the use of actions for certain handling:
+- Consider the use of actions for certain handling; for example:
 
     {
       "script": "script.js",
@@ -107,6 +108,7 @@ const sketch = context.api();
 // Containers to hold selected symbols
 let syncSymbols = [];
 let ignoreSymbolNames = [];
+let useSymbolNames = [];
 
 // Get user preferences for key behaviour; store as variables to avoid repeated 
 /// lookups
@@ -148,7 +150,7 @@ try {
 		if (numSymbols > 0) {
 
 			// Load confirmation dialog, capturing response from user
-			let confirmed = getConfirmation(sketch, syncSymbols, ignoreSymbolNames);
+			let confirmed = getConfirmation(sketch, useSymbolNames, ignoreSymbolNames);
 	    
 	    // If user has opted to continue...
 	    if (confirmed) {
@@ -172,6 +174,11 @@ try {
 		  
 		  	// TMP
 		    message('Update cancelled.');
+		    
+		    // Clear symbol collections
+				syncSymbols = [];
+				ignoreSymbolNames = [];
+				useSymbolNames = [];
 	    }
 
 		// User has selected at least one layer, but none are symbols
@@ -222,6 +229,10 @@ function processLayer( layer ) {
 			
 			ignoreSymbolNames.push(layerName);
 			jsonData.ignore = true;
+		
+		} else {
+			
+			useSymbolNames.push(layerName);
 		}
 		
 		// Add symbol to the sync list

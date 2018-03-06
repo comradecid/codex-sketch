@@ -9,6 +9,7 @@ TO DO
 *** - Load settings from config file and use them globally
 *** - Get more of these to not depend on 'sketch' object as a param
 *** - Determine if sketch api actions are helpful
+- Replace existing confirmation dlog with a full sync examination window
 - Allow selection of files in folder lookup dialog
 - Add in localisable string management, likely with key-based lookup
 - Determine how to detect locale/user language settings, if possible
@@ -42,8 +43,8 @@ const uiStrings = {
 	LBL_CONTINUE : 'Continue',
 	LBL_EXPORT : 'Export data',
 	LBL_TITLE_CONFIRM_UPDATE : 'Confirm style guide update',
-	MSG_CONFIRM_UPDATE : 'Would you like to update the style guide with the following symbols?',
-	MSG_CONFIRM_IGNORE : 'The following symbols will be ignored, and not synced with the style guide:',
+	MSG_CONFIRM_UPDATE : 'The style guide will be updated with the following symbols:',
+	MSG_CONFIRM_IGNORE : "The following symbols will be 'ignored', and only partially synced with the style guide (no presentation changes will be made):", 
 	MSG_SELECT_SYMBOL : 'Please select at least one symbol.',
 	LBL_ABOUT_WIN : 'About Codex', 
 	LBL_PREFS_WIN : 'Preferences',
@@ -88,24 +89,42 @@ export function getConfirmationContent( syncItems, ignoreItems ) {
 
 	if ((syncItems !== undefined) && (ignoreItems !== undefined)) {
 
-		let message = uiStrings.MSG_CONFIRM_UPDATE + '\n\n';
-	  let numItems = syncItems.length;
-		let i = numItems;
-	  while (i > 0) {
+		let numSyncItems = syncItems.length;
+		let numIgnoreItems = ignoreItems.length;
+		let message = '';
+		let i = numSyncItems;
+		
+		// Declare symbols to be synced
+		if (numSyncItems >  0) {
+			
+			message = uiStrings.MSG_CONFIRM_UPDATE + '\n\n';
+			i = numSyncItems;
+			
+		  while (i > 0) {
+			  
+			  i--;
+			  message += syncItems[i];
+			  message += (i > 0) ? uiStrings.LBL_LINEITEM : '';
+		  }
+		}
+	  
+	  if ((numSyncItems >  0) && (numIgnoreItems > 0)) {
 		  
-		  i--;
-		  message += syncItems[i].name;
-		  message += (i > 0) ? uiStrings.LBL_LINEITEM : '';
+		  message += '\n\n';
 	  }
 	  
-		message += '\n\n' + uiStrings.MSG_CONFIRM_IGNORE + '\n\n';
-		numItems = ignoreItems.length;
-	  i = numItems;
-	  while (i > 0) {
-
-		  i--;
-		  message += ignoreItems[i];
-		  message += (i > 0) ? uiStrings.LBL_LINEITEM : '';
+	  // Additional 'ignored' symbols need to be declared
+	  if (numIgnoreItems > 0) {
+		  
+		  message += uiStrings.MSG_CONFIRM_IGNORE + '\n\n';
+		  i = numIgnoreItems;
+		  
+		  while (i > 0) {
+	
+			  i--;
+			  message += ignoreItems[i];
+			  message += (i > 0) ? uiStrings.LBL_LINEITEM : '';
+		  }
 	  }
 	  
 	  return message + '\n';
