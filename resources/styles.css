@@ -75,11 +75,13 @@ h1, button {
 /* ---- */
 
 html {
-  /* Prevent page from scrolling */
-  overflow: hidden;
-  
 	/* Force use of default cursor, even on text */
   cursor: default;
+}
+
+html.noscroll {
+  /* Prevent page from scrolling */
+  overflow: hidden;
 }
 
 *, *:before, *:after {
