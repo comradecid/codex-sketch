@@ -31,12 +31,28 @@ document.getElementById('ctrl_close').addEventListener('click', function () {
 });
 
 
-// Toggle disable on subfields
+// Toggle subfield display
 document.getElementById('form_useIgnoreFlag').addEventListener('click', function () {
 	
   setSubfields('form_useIgnoreFlag');
 });
 
+
+// Set up authentication control
+document.getElementById('form_authSignin').addEventListener('click', function () {
+
+	// TMP
+	pluginCall('storeToken', 'token', '6661234');
+	pluginCall('retrieveToken', 'token');
+});
+
+
+// TMP
+window.tmpVal = function( value ){
+
+	document.getElementById('form_authSignin').disabled = true;
+	document.getElementById('form_authSignin_hint').innerHTML = value;
+}
 
 /* ---- */
   

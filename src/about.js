@@ -10,6 +10,12 @@ UI DELEGATION
 More info: https://developer.apple.com/reference/webkit/webuidelegate?language=objc
 
 
+WARNINGS
+
+The webUI.eval() function can really screw up values being passed along to other 
+areas; be aware that results may not match expectations! 
+
+
 TO DO
 
 *** - Find a way to make webview windows behave in a modal fashion
@@ -103,7 +109,7 @@ function handleClose( webUI, closeWindow ) {
 	
 	} catch(error) {
 		
-		console.log('ERROR:', error);
+		console.log(uiStrings.CONSOLE_ERR_PRFX + error);
 	}
 }
 

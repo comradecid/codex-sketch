@@ -10,6 +10,12 @@ UI DELEGATION
 More info: https://developer.apple.com/reference/webkit/webuidelegate?language=objc
 
 
+WARNINGS
+
+The webUI.eval() function can really screw up values being passed along to other 
+areas; be aware that results may not match expectations! 
+
+
 TO DO
 
 *** - Find a way to make webview windows behave in a modal fashion; currently, 
@@ -33,6 +39,7 @@ TO DO
 - Build in disabling/enabling for parent-dependent subfields
 - Build in handling for catastrophic error-handling when parsing config; if file 
 	contents somehow get munged, revert to defaults and tell user
+- Pull plugin identified from manifest?
 
 NSNonactivatingPanelMask
 
@@ -61,6 +68,7 @@ const CONFIG_FILENAME = 'codex_config.json';
 const pluginsDir = getPluginsDir(context);
 
 // Other constants
+const PLUGIN_IDENTIFIER = "com.comradecid.sketch.codex";  // TODO: Get rid of?
 const PREFS_WIN_WIDTH = 640;
 const PREFS_WIN_HEIGHT = 800;
 
@@ -108,6 +116,33 @@ export default function(context) {
 	  }, 
     handlers: {
 
+			// Store API token
+			storeToken( key, value ) {
+
+				if ((key !== undefined) && (value !== undefined)) {
+				
+					setAppPref(key, value);
+				
+				} else {
+					
+					console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing token key and/or value');
+				}
+			}, 
+
+			// Retrieve API token
+			retrieveToken( key ) {
+				
+				if (key !== undefined) {
+
+				  let value = getAppPref(key);
+				  webUI.eval(`tmpVal(${value})`);
+				
+				} else {
+					
+					console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing token key');
+				}
+			}, 
+	
       // Close window
       dismiss() {
         
@@ -124,7 +159,7 @@ export default function(context) {
 /* ---- */
 
 
-/** Get user preferences
+/** Get user preferences from config file
 	  [!] Performs basic variable checks, but does not validate
 	  [!] Will return default settings if no saved settings are found!
     @return {object} — User preferences
@@ -159,6 +194,94 @@ export function getPrefs() {
 /* ---- */
 
 
+/** Set item in Sketch app preferences
+    @param {string} key - Key with which to identify item
+    @param {string} value — Value for item
+*/
+export function setAppPref(key, value) {
+
+	if ((key !== undefined) && (value !== undefined)) {
+
+		try {
+		
+			// Get user preferences for app
+	    let userDefaults = NSUserDefaults.standardUserDefaults();
+	    let preferences;
+	    
+	    // If prefs entry for this plugin doesn't exist, create one
+	    if (!userDefaults.dictionaryForKey(PLUGIN_IDENTIFIER)) {
+		  
+	      preferences = NSMutableDictionary.alloc().init();
+	    
+	    // Otherwise, pull the entry
+	    } else {
+		    
+	      preferences = NSMutableDictionary.dictionaryWithDictionary(
+	      	userDefaults.dictionaryForKey(PLUGIN_IDENTIFIER));
+	    }
+	    
+	    // Set item in prefs entry
+	    preferences.setObject_forKey(value, key);
+	    userDefaults.setObject_forKey(preferences, PLUGIN_IDENTIFIER);
+	    userDefaults.synchronize();
+  
+		} catch(error) {
+			
+			console.log(uiStrings.CONSOLE_ERR_PRFX + error);
+		}
+	
+	} else {
+		
+		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_SET_APPPREF_NULL);
+	}
+}
+
+
+/* ---- */
+
+
+/** Get item in Sketch app preferences
+    @param {string} key - Key with which to identify item
+    @return {string} — Value for item
+*/
+export function getAppPref(key) {
+
+	if (key !== undefined) {
+
+		try {
+		
+			// Get user preferences for app
+	    let userDefaults = NSUserDefaults.standardUserDefaults();
+	    let preferences;
+	    
+	    // If prefs entry for this plugin exists, pull the entry
+	    if (userDefaults.dictionaryForKey(PLUGIN_IDENTIFIER)) {
+
+	      preferences = NSMutableDictionary.dictionaryWithDictionary(
+	      	userDefaults.dictionaryForKey(PLUGIN_IDENTIFIER));
+
+				return preferences.objectForKey(key);
+	    
+	    } else {
+		    
+				console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_APPPREF_NULL);
+	    }
+  
+		} catch(error) {
+			
+			console.log(uiStrings.CONSOLE_ERR_PRFX + error);
+		}
+	
+	} else {
+		
+		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_GET_APPPREF_NULL);
+	}
+}
+
+
+/* ---- */
+
+
 /** Local utility function: handle prefs dialog closure
     Pull values from form in dialog, then write them to the config file
 */
@@ -180,7 +303,7 @@ function handleClose( webUI, closeWindow ) {
 	
 	} catch(error) {
 		
-		console.log('ERROR:', error);
+		console.log(uiStrings.CONSOLE_ERR_PRFX + error);
 	}
 }
 

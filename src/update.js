@@ -54,7 +54,6 @@ TO DO
 - How do we deal with local overrides?
 - Handle diffs between instances and masters
 - Recurse symbol processing
-- Catch for when we have at least one symbol, but all are 'ignored'
 - Consider the use of actions for certain handling; for example:
 
     {

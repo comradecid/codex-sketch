@@ -16,7 +16,6 @@ TO DO
 - Collect desired name from user for dumpToOutputFile
 - Add in file overwrite confirmation for dumpToOutputFile
 - Make content generation logic a bit more DRY in getConfirmationContent
-- Find better way of handling these UI strings
 - Determine which functions need to be exported, and which can stay private
 - Check for shortcut conflicts with other plugins
 - Add ability to change shortcuts for menu commands via dialog
@@ -38,6 +37,9 @@ const uiStrings = {
 	ERR_JSONSTR_NULL : 'JSON string not provided',
 	ERR_LOADFORM_NULL : 'No form data provided',
 	ERR_LAYER_NULL : 'No layer provided',
+	ERR_APPPREF_NULL : 'No value found for key',
+	ERR_GET_APPPREF_NULL : 'No pref key provided',
+	ERR_SET_APPPREF_NULL : 'No pref key and/or value provided',
 	LBL_CANCEL : 'Cancel',
 	LBL_CHOOSE : 'Choose',
 	LBL_CONTINUE : 'Continue',

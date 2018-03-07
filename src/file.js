@@ -7,7 +7,7 @@ TO DO
 
 - Add in optional file overwrite confirmation check for writeDataToFile
 - Add in error catch if we don't have a valid string to write to file for 
-  writeDataToFile
+  writeDataToFile?
 - Determine which functions need to be exported, and which can stay private
 
 */
