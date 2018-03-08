@@ -6,6 +6,12 @@
 	Due to Webpack bundling behaviour (which currently dumps everything in a flat 
 	dir in the plugin Resources folder), keep an eye on where these paths point to
 
+
+	FORM WARNING!
+	
+	Using <form> tags in these webviews may result in unexpected behaviour; we 
+	recommend avoiding their usage wherever possible
+
 -->
 <html lang="en-UK" class="noscroll">
 	<head>
@@ -25,15 +31,36 @@
 		</header>
 
 		<main>
-			<form>
+			
+<!-- 			<div id="console"></div> -->
 
-			<table>
+			<table class="form">
 
 				<!-- Authentication -->
 				<tr>
 					<td></td>
 					<td colspan="2" class="label">
-						<label for="form_useIgnoreFlag"><span class="icon">&#9888;</span> Sign in to enable style guide updating</label>
+						<label><span class="icon">&#9888;</span> Sign in to enable style guide updating</label>
+					</td>
+				</tr>
+				<tr class="fields">
+					<td></td>
+					<td width="100%">
+						<input type="email" size="30" maxlength="60" name="email" id="form_email" placeholder="email@address.com" />
+						<div id="form_email_hint" class="hint"></div>
+					</td>
+					<td>
+						<aside></aside>
+					</td>
+				</tr>
+				<tr class="fields">
+					<td></td>
+					<td width="100%">
+						<input type="password" size="20" maxlength="60" name="password" id="form_password" placeholder="Password" />
+						<div id="form_password_hint" class="hint"></div>
+					</td>
+					<td>
+						<aside></aside>
 					</td>
 				</tr>
 				<tr>
@@ -92,8 +119,6 @@
 				<!-- / Use debugging -->
 				
 			</table>
-			
-			</form>
 		</main>
 
 		<script src="../dlog_prefs.js"></script>

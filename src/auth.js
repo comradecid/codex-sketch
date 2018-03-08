@@ -2,12 +2,15 @@
 
 TO DO
 
+*** - Add firebase to dependencies
+
 */
 
 
-import * as firebase from "firebase";
+//import * as firebase from "firebase";
 
 // Initialize Firebase
+/*
 const config = {
   apiKey: "AIzaSyADTSEIDVq3GeCdNFmLq2VMMu_OzL0tsOI",
   authDomain: "buildit-codex.firebaseapp.com",
@@ -17,6 +20,7 @@ const config = {
   messagingSenderId: "904105080552"
 };
 firebase.initializeApp(config);
+*/
 
 import { 
 	uiStrings, message
@@ -28,8 +32,9 @@ import {
 
 /** Authenticate user in Firebase
 */
-export function authenticate( email, password ) {
+export function authenticateUser( email, password ) {
 
+	console.log('Hello from auth.js!', email, password);
 /*
 	firebase.auth().signInWithEmailAndPassword(email, password)
 	    .catch(function(error) {

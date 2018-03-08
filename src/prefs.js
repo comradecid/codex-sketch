@@ -56,6 +56,10 @@ import {
 	writeDataToFile, readDataFromFile, getPluginsDir
 } from './file.js';
 
+import {
+	authenticateUser
+} from './auth.js';
+
 // Default configuration, in case it isn't found where expected
 const DEFAULT_USER_CONFIG = {
 	ignoreFlag : '#', 
@@ -116,6 +120,19 @@ export default function(context) {
 	  }, 
     handlers: {
 
+			// Sign in user
+			signIn( username, password ) {
+				
+				if ((username !== undefined) && (password !== undefined)) {
+					
+					authenticateUser(username, password);
+					
+				} else {
+					
+					console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing token key and/or value');
+				}
+			}, 
+			
 			// Store API token
 			storeToken( key, value ) {
 

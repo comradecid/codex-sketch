@@ -42,8 +42,13 @@ document.getElementById('form_useIgnoreFlag').addEventListener('click', function
 document.getElementById('form_authSignin').addEventListener('click', function () {
 
 	// TMP
-	pluginCall('storeToken', 'token', '6661234');
-	pluginCall('retrieveToken', 'token');
+	let email = document.getElementById('form_email').value;
+	let password = document.getElementById('form_password').value;
+	if ((email !== '') && (password !== '')) {
+	
+		pluginCall('signIn', email, password);
+	}
+	
 });
 
 

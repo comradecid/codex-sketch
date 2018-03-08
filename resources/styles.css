@@ -126,12 +126,16 @@ input[type=checkbox] {
 	margin: .2rem 0 0 0;
 }
 
-input[type=text] {
+input[type=text], 
+input[type=email], 
+input[type=password] {
+	padding: .6rem .75rem;
 	border: solid thin #666;
 }
 
 input::placeholder {
-  color: #ccc;	
+  color: #ccc;
+  font-style: italic;	
 }
 
 button {
@@ -213,56 +217,56 @@ main {
 	padding: 2rem;
 }
 
-form {
+.form {
 	max-width: 36rem;
 }
 
-form td {
+.form td {
 	padding: 0 2.5rem 0 0;
 }
 
-form td:first-child {
+.form td:first-child {
 	padding-right: .625rem;
 }
 
-form td:last-child {
+.form td:last-child {
 	padding-right: 0;
 }
 
-form tr {
+.form tr {
 	vertical-align: top;
 }
 
-form tr.fields > td {
-	padding-bottom: 2.5rem;
+.form tr.fields > td {
+	padding-bottom: 1rem;
 }
 
-form .label {
+.form .label {
 	padding: 0 0 1rem 0;
 }
 
-form aside {
+.form aside {
 	width: 20rem;
 	max-width: 20rem;
 	font-size: .825rem;
 	color: #999;
 }
 
-form .hint {
+.form .hint {
 	font-size: .825rem;
 	color: #999;
 	margin: .325rem 0 0 0;
 }
 
-form .sep td {
+.form .sep td {
 	padding: 1.5rem 0 1.5rem 0;
 }
 
-form .sep h2 {
+.form .sep h2 {
   color: #7d7d7d;
 }
 
-form .sep div {
+.form .sep div {
 	overflow: hidden;
 	line-height: 0;
 	height: 0;
@@ -270,11 +274,11 @@ form .sep div {
 	margin: .5rem 0 0 0;
 }
 
-form .sep.warn h2 {
+.form .sep.warn h2 {
 	color: #c00;
 }
 
-form .sep.warn div {
+.form .sep.warn div {
 	border-color: #c00;
 }
 

@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "sketch-module-web-view": "^0.2.6"
-  }, 
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/comradecid/codex-sketch.git"
