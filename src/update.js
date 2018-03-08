@@ -89,17 +89,12 @@ import {
 } from './file.js';
 
 import { 
-	getLayerJSON
+	getLayerJSON, processLayer
 } from './data.js';
 
 import { 
 	getPrefs
 } from './prefs.js';
-
-// Identifiers
-const LAYER_TYPE_SYMBOL_INSTANCE = 'MSSymbolInstance';
-const LAYER_TYPE_SYMBOL_MASTER = 'MSSymbolMaster';
-const SYMBOL_IGNORE_FLAG = '#';  // TODO: Get rid of this
 
 // Main sketch objects and other resources
 const sketch = context.api();
@@ -115,6 +110,12 @@ let prefs = getPrefs();
 let useIgnoreFlag = prefs.useIgnoreFlag;
 let ignoreFlag = prefs.ignoreFlag;
 let useDebugging = prefs.useDebugging;
+
+// Make certain consts available elsewhere
+export {
+	syncSymbols, ignoreSymbolNames, useSymbolNames, 
+  useIgnoreFlag, ignoreFlag, useDebugging
+};
 
 
 /* ---- */
@@ -197,45 +198,3 @@ try {
 }
 
 }
-
-
-/* ---- */
-
-
-/** Local utility function: process symbol for possible sync with style guide
-*/
-// If this layer is a symbol master, recurse through it and grab any other
-// children that are dependent symbols
-// If this layer is a symbol instance, grab its master and use that for 
-// recursive examination
-function processLayer( layer ) {
-	    
-  let layerClass = layer.sketchObject.className();
-  
-  // If this is a symbol...
-  if ((layerClass == LAYER_TYPE_SYMBOL_INSTANCE) || 
-  	  (layerClass == LAYER_TYPE_SYMBOL_MASTER)) {
-
-		// Get name of symbol first, to determine if it should be ignored
-		let layerName = String(layer.sketchObject.name());
-
-		// Get JSON for selected symbol
-		// If name includes ignore flag, ignore it; otherwise, ready it for sync
-		let jsonData = getLayerJSON(layer);
-
-		// If 'ignore' flag is found, add this to the 'ignore' list
-		if (useIgnoreFlag && (0 === (layerName.indexOf(ignoreFlag)))) {
-			
-			ignoreSymbolNames.push(layerName);
-			jsonData.ignore = true;
-		
-		} else {
-			
-			useSymbolNames.push(layerName);
-		}
-		
-		// Add symbol to the sync list
-		syncSymbols.push(jsonData);
-  }
-}
- 
