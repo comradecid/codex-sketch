@@ -29,6 +29,7 @@
     "html-loader": "^0.5.1"
   },
   "dependencies": {
+    "firebase": "^4.10.1",
     "sketch-module-web-view": "^0.2.6"
   },
   "repository": {

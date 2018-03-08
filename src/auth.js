@@ -2,15 +2,16 @@
 
 TO DO
 
-*** - Add firebase to dependencies
-
 */
 
 
-//import * as firebase from "firebase";
+import { 
+	uiStrings, message
+} from './ui.js';
+
+import * as firebase from "firebase";
 
 // Initialize Firebase
-/*
 const config = {
   apiKey: "AIzaSyADTSEIDVq3GeCdNFmLq2VMMu_OzL0tsOI",
   authDomain: "buildit-codex.firebaseapp.com",
@@ -20,11 +21,8 @@ const config = {
   messagingSenderId: "904105080552"
 };
 firebase.initializeApp(config);
-*/
 
-import { 
-	uiStrings, message
-} from './ui.js';
+const ERR_WRONG_PWD = 'auth/wrong-password';
 
 
 /* ---- */
@@ -34,19 +32,42 @@ import {
 */
 export function authenticateUser( email, password ) {
 
-	console.log('Hello from auth.js!', email, password);
+	if ((email !== undefined) && (password !== undefined)) {
+	
+		//console.log('Hello from auth.js!', email, password);
+
+		try {
+
+// This still breaks with the error:
+// console> Error: The XMLHttpRequest compatibility library was not found.		
 /*
-	firebase.auth().signInWithEmailAndPassword(email, password)
-	    .catch(function(error) {
-	  // Handle Errors here.
-	  var errorCode = error.code;
-	  var errorMessage = error.message;
-	  if (errorCode === 'auth/wrong-password') {
-	    alert('Wrong password.');
-	  } else {
-	    alert(errorMessage);
-	  }
-	  console.log(error);
-	});
+			firebase.auth().signInWithEmailAndPassword(email, password)
+			  .catch(function(error) {
+	
+				  // Handle errors according to type
+				  let errorCode = error.code;
+				  let errorMessage = error.message;
+				  
+				  if (errorCode === ERR_WRONG_PWD) {
+					
+				    console.log('Wrong password, dumbass.');
+				  
+				  } else {
+					
+				    console.log(errorMessage);
+				  }
+				  
+				  console.log(error);
+			});
 */
+		
+		} catch( error ) {
+			
+			console.log('fuck', error);
+		}
+
+	} else {
+		
+		console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing email and/or password');
+	}
 }

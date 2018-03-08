@@ -121,15 +121,15 @@ export default function(context) {
     handlers: {
 
 			// Sign in user
-			signIn( username, password ) {
+			signIn( email, password ) {
 				
-				if ((username !== undefined) && (password !== undefined)) {
+				if ((email !== undefined) && (password !== undefined)) {
 					
-					authenticateUser(username, password);
+					authenticateUser(email, password);
 					
 				} else {
 					
-					console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing token key and/or value');
+					console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing email and/or password');
 				}
 			}, 
 			
