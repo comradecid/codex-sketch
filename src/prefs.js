@@ -45,7 +45,6 @@ NSNonactivatingPanelMask
 
 */
 
-
 import WebUI from 'sketch-module-web-view';
 
 import { 
