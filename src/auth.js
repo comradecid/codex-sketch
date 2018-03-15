@@ -5,14 +5,10 @@ TO DO
 */
 
 
-import { 
-	uiStrings, message
-} from './ui.js';
+import message from './ui.js';
 
-<<<<<<< Updated upstream
-=======
 //import * as firebase from "firebase";
-var firebase = require("firebase");
+//var firebase = require("firebase");
 
 //global.XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 
@@ -26,9 +22,8 @@ const config = {
   storageBucket: "buildit-codex.appspot.com",
   messagingSenderId: "904105080552"
 };
-firebase.initializeApp(config);
+//firebase.initializeApp(config);
 
->>>>>>> Stashed changes
 const ERR_WRONG_PWD = 'auth/wrong-password';
 
 
@@ -42,32 +37,27 @@ export function authenticateUser( email, password ) {
 	if ((email !== undefined) && (password !== undefined)) {
 	
 		try {
-<<<<<<< Updated upstream
-		
-			// Authorise user
-=======
 
 // This still breaks with the error:
 // console> Error: The XMLHttpRequest compatibility library was not found.		
-			firebase.auth().signInWithEmailAndPassword(email, password)
-			  .catch(function(error) {
+			// firebase.auth().signInWithEmailAndPassword(email, password)
+			//   .catch(function(error) {
 	
-				  // Handle errors according to type
-				  let errorCode = error.code;
-				  let errorMessage = error.message;
+			// 	  // Handle errors according to type
+			// 	  let errorCode = error.code;
+			// 	  let errorMessage = error.message;
 				  
-				  if (errorCode === ERR_WRONG_PWD) {
+			// 	  if (errorCode === ERR_WRONG_PWD) {
 					
-				    console.log('Wrong password, dumbass.');
+			// 	    console.log('Wrong password, dumbass.');
 				  
-				  } else {
+			// 	  } else {
 					
-				    console.log(errorMessage);
-				  }
+			// 	    console.log(errorMessage);
+			// 	  }
 				  
-				  console.log(error);
-			});
->>>>>>> Stashed changes
+			// 	  console.log(error);
+			// });
 		
 		} catch( error ) {
 			

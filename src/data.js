@@ -1,58 +1,72 @@
+
 /*
 
-DATA-PROCESSING RESOURCES ONLY
+DATA-PROCESSING RESOURCES
 
 
 TO DO
 
+*** - Replace getLayerJSON with improved method from API
 - Determine which functions need to be exported, and which can stay private
 
 */
 
 
-import { 
-	uiStrings
+// Sketch API for gathering information about document items
+//import * as DOM from 'sketch/dom';
+var document = require('sketch/dom').getSelectedDocument();
+//const document = Document.getSelectedDocument();
+
+import {
+  message
 } from './ui.js';
 
-import { 
-	syncSymbols, ignoreSymbolNames, useSymbolNames, 
-  useIgnoreFlag, ignoreFlag, useDebugging
-} from './update.js';
-
-// Identifiers
+// Other constants
 const LAYER_TYPE_SYMBOL_INSTANCE = 'MSSymbolInstance';
 const LAYER_TYPE_SYMBOL_MASTER = 'MSSymbolMaster';
 
+// TODO: Get rid of these?
+let syncSymbols = [];
+let useSymbolNames = [];
+let ignoreSymbolNames = [];
+
+// TMP
+let useIgnoreFlag = true;
+let ignoreFlag = '#';
 
 /* ---- */
-  
 
-/** Get corresponding JSON data for layer object
+
+/** Get sync data for selected layers
 	  [!] Performs basic variable checks, but does not validate
-    @param {object} layer - Layer object to process
-    @return {object} JSON object
+    @param {object} context - Current Sketch context
+    @return {object} — Array containing non-undefined values for the following:
+      1) Processed/consolidated JSON data to send to server
+      2) List of names of symbols to be synced
+      3) List of names of symbols that will be 'ignored'
 */
-export function getLayerJSON( layer ) {
+export function processSelection() {
 
-	if (layer !== undefined) {
-	
-		try {
-			
-			let dict = layer.sketchObject.treeAsDictionary();
-			let jsonData = NSJSONSerialization.dataWithJSONObject_options_error_(dict, 0, nil);
-			let jsonString = NSString.alloc().initWithData_encoding_(jsonData, NSUTF8StringEncoding);
-			
-			return JSON.parse(jsonString);
-			
-		} catch(error) {
+  let selection = document.selectedLayers;
+  let processedSelection = {};
 
-			console.log(uiStrings.CONSOLE_ERR_PRFX + error);
-		}
+  // If user has selected at least one item...
+  if (selection.length > 0) {
 
-	} else {
-		
-		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_LAYER_NULL);
-	}
+    // Traverse selected layer(s) to gather symbol information
+    selection.forEach(( layer ) => { 
+      
+      processLayer(layer);
+    });
+
+    return processedSelection;
+
+  // User hasn't selected anything
+  } else {
+    
+    message(uiStrings.MSG_SELECT_SYMBOL);
+    return null;
+  }
 }
 
 
@@ -65,7 +79,7 @@ export function getLayerJSON( layer ) {
 // children that are dependent symbols
 // If this layer is a symbol instance, grab its master and use that for 
 // recursive examination
-export function processLayer( layer ) {
+function processLayer( layer ) {
 	    
   let layerClass = layer.sketchObject.className();
   
@@ -95,4 +109,35 @@ export function processLayer( layer ) {
 		syncSymbols.push(jsonData);
   }
 }
- 
+
+
+/* ---- */
+  
+
+/** Get corresponding JSON data for layer object
+	  [!] Performs basic variable checks, but does not validate
+    @param {object} layer - Layer object to process
+    @return {object} JSON object
+*/
+function getLayerJSON( layer ) {
+
+	if (layer !== undefined) {
+	
+		try {
+			
+			let dict = layer.sketchObject.treeAsDictionary();
+			let jsonData = NSJSONSerialization.dataWithJSONObject_options_error_(dict, 0, nil);
+			let jsonString = NSString.alloc().initWithData_encoding_(jsonData, NSUTF8StringEncoding);
+			
+			return JSON.parse(jsonString);
+			
+		} catch(error) {
+
+			console.log(uiStrings.CONSOLE_ERR_PRFX + error);
+		}
+
+	} else {
+		
+		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_LAYER_NULL);
+	}
+}
