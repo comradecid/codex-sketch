@@ -29,13 +29,7 @@
     "html-loader": "^0.5.1"
   },
   "dependencies": {
-<<<<<<< Updated upstream
     "sketch-module-web-view": "^0.2.6"
-=======
-    "firebase": "^4.10.1",
-    "sketch-module-web-view": "^0.2.6",
-    "xmlhttprequest": "^1.8.0"
->>>>>>> Stashed changes
   },
   "repository": {
     "type": "git",
