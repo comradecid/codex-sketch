@@ -1,6 +1,6 @@
 /*
 
-UI-RELATED RESOURCES ONLY
+UI RESOURCES
 
 
 TO DO
@@ -9,6 +9,7 @@ TO DO
 *** - Load settings from config file and use them globally
 *** - Get more of these to not depend on 'sketch' object as a param
 *** - Determine if sketch api actions are helpful
+*** - Genericise WebView window calls
 - Replace existing confirmation dlog with a full sync examination window
 - Allow selection of files in folder lookup dialog
 - Add in localisable string management, likely with key-based lookup
@@ -23,12 +24,16 @@ TO DO
 */
 
 
-import { 
-	formatFilePath, writeDataToFile
+// WebView window resources
+import WebUI from 'sketch-module-web-view';
+
+// File-handling resources
+import {
+  formatFilePath
 } from './file.js';
 
 // UI strings and values
-const uiStrings = {
+global.uiStrings = {
 	CONSOLE_ERR_PRFX : '[CODEX](ERR) ',
 	ERR_CONFDLOG_NULL : 'Sketch API and/or symbol set not provided',
 	ERR_CONFMSG_NULL : 'Symbols to sync and/or to ignore not provided',
@@ -55,17 +60,16 @@ const uiStrings = {
 
 // Other constants
 const ICON_FILE = 'icon_128x128.png';
-
-// Make certain consts available elsewhere
-export {
-	uiStrings
-};
+const ABOUT_WIN_WIDTH = 640;
+const ABOUT_WIN_HEIGHT = 480;
+const PREFS_WIN_WIDTH = 640;
+const PREFS_WIN_HEIGHT = 800;
 
 
 /* ---- */
   
 
-/** Show basic message to user in Sketch window
+/** Show basic inline message to user in Sketch window
 	  [!] Performs basic variable checks, but does not validate
     @param {string} message - Text to show user
 */
@@ -73,8 +77,7 @@ export function message( message ) {
 
 	if (message !== undefined) {
 	
-	  //sketch.message(message);
-	  context.document.showMessage(message);
+    context.document.showMessage(message);
 	}
 }
 
@@ -82,12 +85,277 @@ export function message( message ) {
 /* ---- */
   
 
-/** Generate content for confirmation dialog
+/** Pre-process symbols and get confirmation of sync
+	  [!] Performs basic variable checks, but does not validate
+    @param {string} sketch - Sketch API from context
+    @param {string} symbols - Changes that will be synced
+    @return {object} — Click event for dialog	
+*/
+export function getConfirmation( content ) {
+
+	if (content !== undefined) {
+
+		try {
+
+			// Set up confirmation dialog
+			let alert = NSAlert.alloc().init();
+			alert.setIcon(getDlogIcon());
+			alert.addButtonWithTitle(uiStrings.LBL_CONTINUE);
+			alert.addButtonWithTitle(uiStrings.LBL_CANCEL);
+			alert.setMessageText(uiStrings.LBL_TITLE_CONFIRM_UPDATE);
+		  alert.setInformativeText(content);
+		  
+		  // Load confirmation dialog, returning click event
+		  let clickEvent = alert.runModal();
+		  return (clickEvent == NSAlertFirstButtonReturn);
+
+		} catch(error) {
+
+			console.log(uiStrings.CONSOLE_ERR_PRFX + error);
+			return false;
+		}
+  
+	} else {
+		
+		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_CONFDLOG_NULL);
+		return false;
+	}
+}
+
+
+/* ---- */
+
+
+/** Display save file dialog to capture output data dump
+	  [!] Performs basic variable checks, but does not validate
+    @param {string} jsonString — Content to save as JSON	
+*/
+export function getOutputFolder( data ) {
+
+	if (data !== undefined) {
+
+		try {
+			
+		  // NOTE: Currently, this will automatically overwrite any 
+		  // existing dumpfiles, and does not accept name changes
+		  // Always uses same filename, as set by global var
+		  
+		  // Set up 'select folder' dialog
+			let panel = NSOpenPanel.openPanel();
+			panel.setCanChooseDirectories(true);
+			panel.setCanCreateDirectories(true);
+			panel.setCanChooseFiles(false);
+			panel.setPrompt(uiStrings.LBL_EXPORT);
+
+			// Load file save dialog, capturing click event
+			let clickEvent = panel.runModal();
+			if (clickEvent == NSFileHandlingPanelOKButton) {
+		
+				// Dump data to new file at target directory path
+				writeDataToFile(data, formatFilePath(panel.URL()), OUTPUT_FILENAME);
+			}
+
+		} catch(error) {
+
+			console.log(uiStrings.CONSOLE_ERR_PRFX + error);
+		}
+		
+	} else {
+		
+		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_JSONSTR_NULL);
+	}
+}
+
+
+/* ---- */
+
+
+/** Show 'Preferences' dialog containing plugin user settings
+*/
+export function showPreferencesDlog( context ) {
+	
+	// Create webview dialog
+  const webUI = new WebUI(context, require('../resources/dlog_prefs.html'), {
+    identifier: 'codex.prefs', // Unique ID for referring to this dialog
+    x: 0,
+    y: 0,
+	  width: PREFS_WIN_WIDTH,
+	  height: PREFS_WIN_HEIGHT,
+    blurredBackground: true,
+    onlyShowCloseButton: true,
+		title: uiStrings.LBL_PREFS_WIN,
+    hideTitleBar: false,
+    shouldKeepAround: true,
+		resizable: false, 
+    frameLoadDelegate: {
+	    
+	    // Serves as an 'onload' handler for page in webview
+      'webView:didFinishLoadForFrame:'(webView, webFrame) {
+        
+				// TODO: dataString is still getting interpreted as an object;
+				//       find another way of handling this?
+				let dataString = JSON.stringify(getPrefs());
+        // Populate webview form with values
+        webUI.eval(`loadFormValues(${dataString})`);
+      }
+    
+    },
+  	uiDelegate: {}, 
+	  onPanelClose: function () {  // Return `false` to prevent closing the panel
+	  
+	    handleClose(webUI);
+	  }, 
+    handlers: {
+
+			// Sign in user
+			signIn( email, password ) {
+				
+				if ((email !== undefined) && (password !== undefined)) {
+					
+					authenticateUser(email, password);
+					
+				} else {
+					
+					console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing email and/or password');
+				}
+			}, 
+			
+			// Store API token
+			storeToken( key, value ) {
+
+				if ((key !== undefined) && (value !== undefined)) {
+				
+					setAppPref(key, value);
+				
+				} else {
+					
+					console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing token key and/or value');
+				}
+			}, 
+
+			// Retrieve API token
+			retrieveToken( key ) {
+				
+				if (key !== undefined) {
+
+				  let value = getAppPref(key);
+				  webUI.eval(`tmpVal(${value})`);
+				
+				} else {
+					
+					console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing token key');
+				}
+			}, 
+	
+      // Close window
+      dismiss() {
+        
+        // Calling a direct close on the panel doesn't fire the onPanelClose 
+        // event; as such, we need to call it manually
+        handleClose(webUI, true);
+      }
+      
+    }
+  });
+}
+
+
+/* ---- */
+
+
+/** Show 'About' dialog containing plugin info and help documentation
+*/
+export function showAboutDlog( context ) {
+	
+	// Create webview dialog
+  const webUI = new WebUI(context, require('../resources/dlog_about.html'), {
+    identifier: 'codex.about', // Unique ID for referring to this dialog
+    x: 0,
+    y: 0,
+	  width: ABOUT_WIN_WIDTH,
+	  height: ABOUT_WIN_HEIGHT,
+    blurredBackground: true,
+    onlyShowCloseButton: true,
+		title: uiStrings.LBL_ABOUT_WIN,
+    hideTitleBar: false,
+    shouldKeepAround: true,
+		resizable: false, 
+    frameLoadDelegate: {
+	    
+      // Serves as an 'onload' handler for page in webview; 
+      // doesn't always work as expected
+      'webView:didFinishLoadForFrame:'(webView, webFrame) {
+      }
+    
+    },
+  	uiDelegate: {}, 
+	  onPanelClose: function () {  // Return `false` to prevent closing the panel
+	  
+	    handlePanelClose(webUI);
+	  }, 
+    handlers: {
+
+      // Close window
+      dismiss() {
+        
+        // Calling a direct close on the panel doesn't fire the onPanelClose 
+        // event; as such, we need to call it manually
+        handlePanelClose(webUI, true);
+      }
+      
+    }
+  });
+}
+
+
+/* ---- */
+
+
+/** Local utility function: Handle prefs dialog closure
+    Pull values from form in dialog, then write them to the config file
+*/
+function handlePanelClose( webUI, closeWindow ) {
+
+	try {
+
+		// Close dialog window, as needed
+		if (closeWindow) {
+		
+			webUI.panel.close();
+		}
+	
+	} catch(error) {
+		
+		//console.log(uiStrings.CONSOLE_ERR_PRFX + error);
+	}
+}
+
+
+/* ---- */
+
+
+/** Local utility function: Get standard dialog icon
+    @return {object} — Image object for icon
+*/
+function getDlogIcon() {
+
+  let api = context.api();
+  let iconPath = formatFilePath(api.resourceNamed(ICON_FILE));
+  let iconImage = NSImage.alloc().initWithContentsOfFile(iconPath);
+
+  return iconImage;
+}
+
+
+/* ---- */
+  
+
+/** Generate content for update confirmation dialog
 	  [!] Performs basic variable checks, but does not validate
     @param {object} syncItems - Collection of symbols to sync with server
     @param {object} ignoreItems - Collection of symbols to ignore
 */
-export function getConfirmationContent( syncItems, ignoreItems ) {
+export function getUpdateConfirmationContent( syncItems, ignoreItems ) {
 
 	if ((syncItems !== undefined) && (ignoreItems !== undefined)) {
 
@@ -134,50 +402,5 @@ export function getConfirmationContent( syncItems, ignoreItems ) {
 	} else {
 		
 		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_CONFMSG_NULL);
-	}
-}
-
-
-/* ---- */
-  
-
-/** Pre-process symbols and get confirmation of sync
-	  [!] Performs basic variable checks, but does not validate
-    @param {string} sketch - Sketch API from context
-    @param {string} symbols - Changes that will be synced
-    @return {object} Click event for dialog	
-*/
-export function getConfirmation( sketch, syncItems, ignoreItems ) {
-
-	if ((sketch !== undefined) && 
-			(syncItems !== undefined) && (ignoreItems !== undefined)) {
-
-		try {
-			
-			const iconPath = formatFilePath(sketch.resourceNamed(ICON_FILE));
-			const iconImage = NSImage.alloc().initWithContentsOfFile(iconPath);
-		
-			// Set up confirmation dialog
-			let alert = NSAlert.alloc().init();
-			alert.setIcon(iconImage);
-			alert.addButtonWithTitle(uiStrings.LBL_CONTINUE);
-			alert.addButtonWithTitle(uiStrings.LBL_CANCEL);
-			alert.setMessageText(uiStrings.LBL_TITLE_CONFIRM_UPDATE);
-		  alert.setInformativeText(getConfirmationContent(syncItems, ignoreItems));
-		  
-		  // Load confirmation dialog, returning click event
-		  let clickEvent = alert.runModal();
-		  return (clickEvent == NSAlertFirstButtonReturn);
-
-		} catch(error) {
-
-			console.log(uiStrings.CONSOLE_ERR_PRFX + error);
-			return false;
-		}
-  
-	} else {
-		
-		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_CONFDLOG_NULL);
-		return false;
 	}
 }

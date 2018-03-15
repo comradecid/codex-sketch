@@ -5,9 +5,7 @@ TO DO
 */
 
 
-import { 
-	uiStrings, message
-} from './ui.js';
+import message from './ui.js';
 
 import * as firebase from "firebase";
 

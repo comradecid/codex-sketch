@@ -18,9 +18,9 @@ import pluginCall from 'sketch-module-web-view/client';
 
 
 // Disable the context menu to have a more native feel
-document.addEventListener("contextmenu", function( e ) {
+document.addEventListener("contextmenu", function( event ) {
 	
-  e.preventDefault();
+  event.preventDefault();
 });
 
 
@@ -166,27 +166,3 @@ function jsonSanitize( value ) {
 		return newValue;
 	}
 }
-
-
-/* ---- */
-
-
-/*
-// Listen for unload of document in webview
-window.addEventListener('load', function () {
-	
-  pluginCall('foobar', 'window loaded');
-});
-
-// Listen for unload of document in webview
-window.addEventListener('pageshow', function () {
-	
-  pluginCall('foobar', 'window shown');
-});
-
-// Listen for unload of document in webview
-window.addEventListener('blur', function () {
-	
-  pluginCall('foobar', 'window blurred');
-});
-*/

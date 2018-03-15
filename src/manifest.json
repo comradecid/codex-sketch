@@ -12,18 +12,29 @@
       "name": "Update style guide",
       "identifier": "update",
       "shortcut": "cmd shift u",
-      "script": "./update.js"
+      "script": "./main.js", 
+      "handler": "runUpdate"
     }, 
     {
       "name": "Preferences",
       "identifier": "prefs",
       "shortcut": "cmd shift p",
-      "script": "./prefs.js"
+      "script": "./main.js", 
+      "handler": "runPreferences"
     }, 
     {
       "name": "About Codex",
       "identifier": "about",
-      "script": "./about.js"
+      "script": "./main.js", 
+      "handler": "runAbout"
+    }, 
+    {
+      "script" : "./main.js",
+      "handlers" : {
+        "actions" : {
+          "Startup" : "onStartup"
+        }
+      }
     }
   ],
   "menu": {

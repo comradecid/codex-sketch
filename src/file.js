@@ -1,6 +1,6 @@
 /*
 
-FILE-MANAGEMENT RESOURCES ONLY
+FILE-MANAGEMENT RESOURCES
 
 
 TO DO
@@ -12,11 +12,6 @@ TO DO
 
 */
 
-
-import { 
-	uiStrings
-} from './ui.js';
-
 // Other constants
 const OUTPUT_FILENAME = 'codex_output.json';
 
@@ -25,6 +20,8 @@ const OUTPUT_FILENAME = 'codex_output.json';
 
 
 /** Get parent directory for this plugin (usually the Sketch plugin directory)
+    In this plugin, this is typically used to determine storage location for 
+    user config file
 	  [!] If you're using an alias to point to your plugin, results may vary!
     @param {object} context — Current context
     @return {string} Path of parent dir
@@ -56,7 +53,8 @@ export function getPluginsDir( context ) {
 /* ---- */
 
 
-/** Strip file prefix from path string
+/** Strip file prefix from path string; used to make filepath captured from OS 
+    dialogs usable by other processes
 	  [!] Performs basic variable checks, but does not validate
     @param {string} path - Path to clean up
     @return {string} Cleaned-up path
@@ -147,48 +145,5 @@ export function readDataFromFile( path ) {
 	} else {
 		
 		console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing path');
-	}
-}
-
-/* ---- */
-  
-
-/** Display save file dialog to capture output
-	  [!] Performs basic variable checks, but does not validate
-    @param {string} jsonString — Content to save as JSON	
-*/
-export function dumpToOutputFile( data ) {
-
-	if (data !== undefined) {
-
-		try {
-			
-		  // NOTE: Currently, this will automatically overwrite any 
-		  // existing dumpfiles, and does not accept name changes
-		  // Always uses same filename, as set by global var
-		  
-		  // Set up 'select folder' dialog
-			let panel = NSOpenPanel.openPanel();
-			panel.setCanChooseDirectories(true);
-			panel.setCanCreateDirectories(true);
-			panel.setCanChooseFiles(false);
-			panel.setPrompt(uiStrings.LBL_EXPORT);
-
-			// Load file save dialog, capturing click event
-			let clickEvent = panel.runModal();
-			if (clickEvent == NSFileHandlingPanelOKButton) {
-		
-				// Dump data to new file at target directory path
-				writeDataToFile(data, formatFilePath(panel.URL()), OUTPUT_FILENAME);
-			}
-
-		} catch(error) {
-
-			console.log(uiStrings.CONSOLE_ERR_PRFX + error);
-		}
-		
-	} else {
-		
-		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_JSONSTR_NULL);
 	}
 }
