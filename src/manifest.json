@@ -25,6 +25,7 @@
     {
       "name": "About Codex",
       "identifier": "about",
+      "shortcut": "cmd shift m",
       "script": "./main.js", 
       "handler": "runAbout"
     }, 

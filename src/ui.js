@@ -23,6 +23,8 @@ TO DO
 
 */
 
+// TMP: Sketch settings API subset
+import * as Settings from 'sketch/settings';
 
 // WebView window resources
 import WebUI from 'sketch-module-web-view';
@@ -61,7 +63,7 @@ global.uiStrings = {
 // Other constants
 const ICON_FILE = 'icon_128x128.png';
 const ABOUT_WIN_WIDTH = 640;
-const ABOUT_WIN_HEIGHT = 480;
+const ABOUT_WIN_HEIGHT = 800;
 const PREFS_WIN_WIDTH = 640;
 const PREFS_WIN_HEIGHT = 800;
 
@@ -252,7 +254,7 @@ export function showPreferencesDlog( context ) {
         
         // Calling a direct close on the panel doesn't fire the onPanelClose 
         // event; as such, we need to call it manually
-        handleClose(webUI, true);
+        handlePanelClose(webUI, true);
       }
       
     }
@@ -294,6 +296,27 @@ export function showAboutDlog( context ) {
 	    handlePanelClose(webUI);
 	  }, 
     handlers: {
+
+      // Get custom token for user
+      checkToken() {
+
+        // Attempt to pull token from user app settings
+        let token = Settings.settingForKey('token');
+
+        console.log('checking for token:', token);
+        // Call appropriate handler in userauth_for_dlogs.js
+
+        webUI.eval(`handleTokenCheck('${token}')`);
+      },
+
+      // Store custom token for user
+      storeToken( token ) {
+
+        //console.log('storing token:', token);
+        Settings.setSettingForKey('token', token);
+
+        //console.log('retrieving:', Settings.settingForKey('token'));
+      },
 
       // Close window
       dismiss() {

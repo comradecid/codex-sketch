@@ -96,11 +96,10 @@ import {
   processSelection
 } from './data.js';
 
-// Container for user preferences; empty until we load from file
-//global.curUserConfig = {};
-
 // Other globals
 global.pluginsDirPath = '';
+
+//global.curUserConfig = {};
 
 
 /* ---- */
@@ -110,16 +109,11 @@ global.pluginsDirPath = '';
 */
 export function onStartup( context ) {
 
-  //console.log('Codex plugin starting up');
-
+  // Get location of this plugin
   pluginsDirPath = getPluginsDir(context);
-  //console.log(pluginsDirPath);
 
   // Load user preferences
   //curUserConfig = loadPrefs();
-
-  // Get access to Firebase backend, for performing style guide updates
-  //loadFirebase();
 }
 
 

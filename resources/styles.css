@@ -86,8 +86,8 @@ html.noscroll {
 
 *, *:before, *:after {
   /* Prevent selection of window UI content */
-  -webkit-user-select: none;
-  user-select: none;
+  /* -webkit-user-select: none;
+  user-select: none; */
 }
 
 input, textarea {
