@@ -130,13 +130,3 @@ function hideSignLoading() {
   // Hide loading indicator
   document.getElementById('loading').style.display = 'none';
 }
-
-
-/* ---- */
-
-// TMP
-// Replace with more formal inline error-reporting method
-window.konsol = function( message ) {
-
-  document.getElementById('konsol').innerHTML += message + '<br/>';
-}

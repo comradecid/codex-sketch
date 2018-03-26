@@ -33,52 +33,54 @@
 		<main>
 
       <section>
-			<div id="konsol"></div>
-      <div id="loading" style="display: none;">Loading...</div>
+        <div id="loading" style="display: none;">Loading...</div>
+        <div id="status" style="display: none;">ERROR</div>
 
-      <div id="status" style="display: none;">ERROR</div>
+        <table id="form_signin" class="form" style="display: none;">
+          <tr class="fields">
+            <td></td>
+            <td width="100%">
+              <input type="email" size="30" maxlength="60" name="email" id="field_email" value="" />
+              <div id="field_email_hint" class="hint"></div>
+            </td>
+          </tr>
+          <tr class="fields">
+            <td></td>
+            <td width="100%">
+              <input type="password" size="20" maxlength="60" name="password" id="field_password" value="" />
+              <div id="field_password_hint" class="hint"></div>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td width="100%">
+              <button name="authSignin" id="field_authSignin" alt="Sign in" title="Sign in">Sign in</button>
+              <div id="field_authSignin_hint" class="hint"></div>
+            </td>
+          </tr>
+        </table>
 
-			<table id="form_signin" class="form" style="display: none;">
-				<tr class="fields">
-					<td></td>
-					<td width="100%">
-						<input type="email" size="30" maxlength="60" name="email" id="field_email" value="" />
-						<div id="field_email_hint" class="hint"></div>
-					</td>
-				</tr>
-				<tr class="fields">
-					<td></td>
-					<td width="100%">
-						<input type="password" size="20" maxlength="60" name="password" id="field_password" value="" />
-						<div id="field_password_hint" class="hint"></div>
-					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td width="100%">
-            <button name="authSignin" id="field_authSignin" alt="Sign in" title="Sign in">Sign in</button>
-						<div id="field_authSignin_hint" class="hint"></div>
-					</td>
-				</tr>
-      </table>
+        <table id="form_signout" class="form" style="display: none;">
+          <tr>
+            <td></td>
+            <td width="100%">
+              <button name="authSignout" id="field_authSignout" alt="Sign out" title="Sign out">Sign out</button>
+            </td>
+          </tr>
+        </table>
 
-			<table id="form_signout" class="form" style="display: none;">
-        <tr>
-          <td></td>
-          <td width="100%">
-            <button name="authSignout" id="field_authSignout" alt="Sign out" title="Sign out">Sign out</button>
-          </td>
-        </tr>
-      </table>
+      </section>
 
 			<section>
         <p>This plugin is used to sync changes with UI components represented in Sketch libraries with your Codex style guide.</p>
       </section>
+
       <section>
         <h3>Set it up first</h3>
         <p>After installing the plugin, you'll need to first configure it for use. In the Sketch app menu, go to <i>Plugins</i> > <i>Codex</i> > <i>Preferences</i>; you should then see the Preferences dialog. The first, most important step is to sign in; without this, the style guide won't accept any of your changes. Click on <b>Sign in</b>, and enter your username and password.</p>
         <p>Next, you should take note of the <i>'Ignore items whose names begin with...'</i> section; these are settings for how to tell the plugin to 'ignore' specific items, so that no presentation changes to those items are sent to the style guide (even if you've selected them to be synced). Usually you won't have to change anything in this section. Close the Preferences dialog and your settings will be saved.</p>
       </section>
+
       <section>
         <h3>Syncing with the style guide</h3>
         <p>Select those components in your Sketch file that you'd like to update in the style guide.</p>
@@ -86,8 +88,8 @@
 
 		</main>
 
-<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
-<script src="../userauth_for_dlogs.js"></script>
-<script src="../dlog_about.js"></script>
-</body>
+  <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+  <script src="../userauth_for_dlogs.js"></script>
+  <script src="../dlog_about.js"></script>
+  </body>
 </html>

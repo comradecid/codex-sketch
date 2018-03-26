@@ -303,9 +303,7 @@ export function showAboutDlog( context ) {
         // Attempt to pull token from user app settings
         let token = Settings.settingForKey('token');
 
-        console.log('checking for token:', token);
         // Call appropriate handler in userauth_for_dlogs.js
-
         webUI.eval(`handleTokenCheck('${token}')`);
       },
 
@@ -314,8 +312,13 @@ export function showAboutDlog( context ) {
 
         //console.log('storing token:', token);
         Settings.setSettingForKey('token', token);
+      },
 
-        //console.log('retrieving:', Settings.settingForKey('token'));
+      // Wipe custom token for user
+      wipeToken() {
+
+        //console.log('storing token:', token);
+        Settings.setSettingForKey('token', null);
       },
 
       // Close window

@@ -44,7 +44,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
     // Get + temporarily store user.uid
     userId = user.uid;
-    
+
     // If we don't have a local copy of the token, go get one, and continue with
     // auth state set as 'false'
     if (userToken === '') {
@@ -85,14 +85,12 @@ window.checkAuth = function() {
 
     // Call appropriate handler in script backing up html page
     window.handleAuthCheck(true);
-    //window.konsol('auth ok');
 
   // If not, begin deeper dive
   } else {
 
     // Do we have a custom token for the user?
     pluginCall('checkToken');
-    //window.konsol('deeper dive...');
   }
 }
 
@@ -102,17 +100,15 @@ window.checkAuth = function() {
 */
 window.handleTokenCheck = function( token ) {
 
-  window.konsol('handling token check... ' + token);
-
   // General truthy check for some value returned from the call
-  if (token) {
+  if (token && (token !== 'null')) {
 
     // If we have a token, try it out to see if it works;
     // either way, the success/fail of this attempt will is handled by 
     // 'onAuthStateChanged' listener attached to firebase above
     firebase.auth().signInWithCustomToken(token).then(function() {
 
-        //window.konsol('Executed right after sign in call');
+        // Execute additional code right after sign-in call
 
       }).catch(function(error) {
 
@@ -120,13 +116,11 @@ window.handleTokenCheck = function( token ) {
         let errorCode = error.code;
         let errorMessage = error.message;
         
-        window.konsol(error);
+        //document.innerHTML += '<hr />' + error + '<br/>';
     });
   
   // If we got nothing useful back...
   } else {
-
-    window.konsol('no token; showing signin form');
 
     // Call appropriate handler in script backing up html page
     window.handleAuthCheck(false);
@@ -154,26 +148,23 @@ window.signIn = function( email, password ) {
 				  
 				  if (errorCode === ERR_WRONG_PWD) {
 					
-//				    window.konsol('Wrong password, dumbass.');
+            //document.innerHTML += '<hr />WRONG PASSWORD<br/>';
 				  
 				  } else {
 					
-//				    window.konsol(errorMessage);
+            //document.innerHTML += '<hr />ERROR SIGNING IN<br/>';
 				  }
 				  
-//          window.konsol(error);
           window.handleIsAuthChanging(false);
 			});
 		
 		} catch( error ) {
 			
-//      window.konsol('fuck ' + error);
       window.handleIsAuthChanging(false);
 		}
 
 	} else {
 		
-//    window.konsol('Missing email and/or password');
     window.handleIsAuthChanging(false);
 	}
 
@@ -188,7 +179,8 @@ window.signOut = function() {
 
   firebase.auth().signOut().then(function() {
       
-      //window.konsol('Executed right after sign out call');
+      // Wipe token value stored in app settings
+      pluginCall('wipeToken');
       
     }).catch(function(error) {
 
@@ -196,16 +188,7 @@ window.signOut = function() {
       let errorCode = error.code;
       let errorMessage = error.message;
       
-      if (errorCode === ERR_WRONG_PWD) {
-      
-        //window.konsol('Wrong password, dumbass.');
-      
-      } else {
-      
-        //window.konsol(errorMessage);
-      }
-      
-      //window.konsol(error);
+      //document.innerHTML += '<hr />' + error + '<br/>';
     });
 }
 
@@ -229,8 +212,6 @@ function getCustomToken( uid ) {
 
     xhr.addEventListener("readystatechange", function () {
       if (this.readyState === 4) {
-
-        //window.konsol('response status: ' + this.status);
 
         if (this.status === 200) {
 
