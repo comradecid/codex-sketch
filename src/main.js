@@ -79,21 +79,9 @@ import {
   showPreferencesDlog, showAboutDlog
 } from './ui.js';
 
-//import './auth.js';   // User authentication resources
-
-// User preferences resources
-// import {
-//   loadPrefs
-// } from './prefs.js';
-
-// File-handling resources
-import {
-  getPluginsDir
-} from './file.js';
-
 // Data-processing resources
 import {
-  processSelection
+  getPluginsDir, processSelection
 } from './data.js';
 
 // Other globals
@@ -117,7 +105,10 @@ export function onStartup( context ) {
 }
 
 
-/** Handler for menu command 'Update style guide'
+/* ---- */
+
+
+/** Handler for menu command 'update'
 */
 export function runUpdate( context ) {
 
@@ -139,31 +130,23 @@ export function runUpdate( context ) {
 }
 
 
-/** Handler for menu command 'Update style guide'
+/* ---- */
+
+
+/** Handler for menu command 'prefs'
 */
 export function runPreferences( context ) {
 
-  try {
-  
-    showPreferencesDlog();
-
-  } catch(error) {
-  
-    console.log(error);
-  }
+  showPreferencesDlog();
 }
 
 
-/** Handler for menu command 'Update style guide'
+/* ---- */
+
+
+/** Handler for menu command 'about'
 */
 export function runAbout( context ) {
 
-  try {
-  
-    showAboutDlog();
-  
-  } catch(error) {
-    
-    console.log(error);
-  }
+  showAboutDlog();
 }

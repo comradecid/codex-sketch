@@ -32,7 +32,7 @@ import WebUI from 'sketch-module-web-view';
 // File-handling resources
 import {
   formatFilePath
-} from './file.js';
+} from './data.js';
 
 // UI strings and values
 global.uiStrings = {
@@ -208,46 +208,6 @@ export function showPreferencesDlog( context ) {
 	    handleClose(webUI);
 	  }, 
     handlers: {
-
-			// Sign in user
-			signIn( email, password ) {
-				
-				if ((email !== undefined) && (password !== undefined)) {
-					
-					authenticateUser(email, password);
-					
-				} else {
-					
-					console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing email and/or password');
-				}
-			}, 
-			
-			// Store API token
-			storeToken( key, value ) {
-
-				if ((key !== undefined) && (value !== undefined)) {
-				
-					setAppPref(key, value);
-				
-				} else {
-					
-					console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing token key and/or value');
-				}
-			}, 
-
-			// Retrieve API token
-			retrieveToken( key ) {
-				
-				if (key !== undefined) {
-
-				  let value = getAppPref(key);
-				  webUI.eval(`tmpVal(${value})`);
-				
-				} else {
-					
-					console.log(uiStrings.CONSOLE_ERR_PRFX + 'Missing token key');
-				}
-			}, 
 	
       // Close window
       dismiss() {
@@ -428,5 +388,20 @@ export function getUpdateConfirmationContent( syncItems, ignoreItems ) {
 	} else {
 		
 		console.log(uiStrings.CONSOLE_ERR_PRFX + uiStrings.ERR_CONFMSG_NULL);
+	}
+}
+
+
+/* ---- */
+
+
+/** Local utility: check if prefs object is empty
+*/
+function objEmpty( obj ) {
+	
+	if (obj !== undefined) {
+
+		return ((Object.keys(obj).length === 0) && 
+			(obj.constructor === Object));
 	}
 }
