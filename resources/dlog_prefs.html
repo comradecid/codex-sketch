@@ -31,97 +31,100 @@
 		</header>
 
 		<main>
-			
-<!-- 			<div id="console"></div> -->
 
-			<table class="form">
+      <!-- Authentication -->
+      <section>
+        <div id="loading" style="display: none;">Loading...</div>
+        <div id="status" style="display: none;">ERROR</div>
 
-				<!-- Authentication -->
-				<tr>
-					<td></td>
-					<td colspan="2" class="label">
-						<label><span class="icon">&#9888;</span> Sign in to enable style guide updating</label>
-					</td>
-				</tr>
-				<tr class="fields">
-					<td></td>
-					<td width="100%">
-						<input type="email" size="30" maxlength="60" name="email" id="form_email" placeholder="email@address.com" />
-						<div id="form_email_hint" class="hint"></div>
-					</td>
-					<td>
-						<aside></aside>
-					</td>
-				</tr>
-				<tr class="fields">
-					<td></td>
-					<td width="100%">
-						<input type="password" size="20" maxlength="60" name="password" id="form_password" placeholder="Password" />
-						<div id="form_password_hint" class="hint"></div>
-					</td>
-					<td>
-						<aside></aside>
-					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td width="100%">
-						<button name="authSignin" id="form_authSignin" alt="Sign in" title="Sign in">Sign in</button>
-						<div id="form_authSignin_hint" class="hint"></div>
-					</td>
-					<td>
-						<aside></aside>
-					</td>
-				</tr>
-				<tr class="sep fields">
-					<td colspan="3">
-						<div></div>
-					</td>
-				</tr>
-				<!-- / Authentication -->
-				
-				<!-- 'Ignore' flag -->
-				<tr>
-					<td>
-						<input type="checkbox" name="useIgnoreFlag" id="form_useIgnoreFlag" />
-					</td>
-					<td colspan="2" class="label">
-						<label for="form_useIgnoreFlag">Ignore symbols whose names begin with...</label>
-					</td>
-				</tr>
-				<tr class="fields" id="useIgnoreFlag_0">
-					<td></td>
-					<td width="100%">
-						<input type="text" size="5" maxlength="5" name="ignoreFlag" id="form_ignoreFlag" placeholder="#" />
-						<div class="hint">Max 5 characters</div>
-					</td>
-					<td>
-						<aside>Symbols whose names begin with this text will be '<i>ignored</i>', in that the style guide will note that they exist, but not add or update any details for them.</aside>
-					</td>
-				</tr>
-				<!-- / 'Ignore' flag -->
-				
-				<!-- Use debugging -->
-				<tr class="sep warn">
-					<td colspan="3">
-						<h2>Danger zone</h2>
-						<div></div>
-					</td>
-				</tr>
-				<tr class="fields">
-					<td>
-						<input type="checkbox" name="useDebugging" id="form_useDebugging" />
-					</td>
-					<td colspan="2" class="label">
-						<label for="form_useDebugging">Turn on debugging</label>
-					</td>
-				</tr>
-				<!-- / Use debugging -->
-				
-			</table>
+        <table id="form_signin" class="form" style="display: none;">
+          <tr class="fields">
+            <td></td>
+            <td width="100%">
+              <input type="email" size="30" maxlength="60" name="email" id="field_email" value="" />
+              <div id="field_email_hint" class="hint"></div>
+            </td>
+          </tr>
+          <tr class="fields">
+            <td></td>
+            <td width="100%">
+              <input type="password" size="20" maxlength="60" name="password" id="field_password" value="" />
+              <div id="field_password_hint" class="hint"></div>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td width="100%">
+              <button name="authSignin" id="field_authSignin" alt="Sign in" title="Sign in">Sign in</button>
+              <div id="field_authSignin_hint" class="hint"></div>
+            </td>
+          </tr>
+        </table>
+
+        <table id="form_signout" class="form" style="display: none;">
+          <tr>
+            <td></td>
+            <td width="100%">
+              <button name="authSignout" id="field_authSignout" alt="Sign out" title="Sign out">Sign out</button>
+            </td>
+          </tr>
+        </table>
+
+      </section>
+      <!-- /Authentication -->
+
+      <!-- Preferences -->
+      <section>
+
+        <table class="form">
+
+            <!-- 'Ignore' flag -->
+            <tr>
+              <td>
+                <input type="checkbox" name="useIgnoreFlag" id="form_useIgnoreFlag" />
+              </td>
+              <td colspan="2" class="label">
+                <label for="form_useIgnoreFlag">Ignore symbols whose names begin with...</label>
+              </td>
+            </tr>
+            <tr class="fields" id="useIgnoreFlag_0">
+              <td></td>
+              <td width="100%">
+                <input type="text" size="5" maxlength="5" name="ignoreFlag" id="form_ignoreFlag" placeholder="#" />
+                <div class="hint">Max 5 characters</div>
+              </td>
+              <td>
+                <aside>Symbols whose names begin with this text will be '<i>ignored</i>', in that the style guide will note that they exist, but not add or update any details for them.</aside>
+              </td>
+            </tr>
+            <!-- / 'Ignore' flag -->
+            
+            <!-- Use debugging -->
+            <tr class="sep warn">
+              <td colspan="3">
+                <h2>Danger zone</h2>
+                <div></div>
+              </td>
+            </tr>
+            <tr class="fields">
+              <td>
+                <input type="checkbox" name="useDebugging" id="form_useDebugging" />
+              </td>
+              <td colspan="2" class="label">
+                <label for="form_useDebugging">Turn on debugging</label>
+              </td>
+            </tr>
+            <!-- / Use debugging -->
+            
+          </table>
+
+      </section>
+      <!-- /Preferences -->
+
 		</main>
 
     <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+    <script src="../userauth_for_dlogs.js"></script>
 		<script src="../dlog_prefs.js"></script>
 	</body>
 </html>
